@@ -1,5 +1,6 @@
 package com.soict.reviewshopfood.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -29,16 +30,19 @@ public class ShopService implements IShopService {
 	private ModelMapper modelMapper;
 
 	@Override
-	public ShopModel findShopByNameShop(String nameShop) {
+	public List<ShopModel> findShopByNameShop(String nameShop) {
 
-		List<Shop> shops = shopDao.findShopByNameShop(nameShop);
-		ShopModel shopModel = new ShopModel();
-//		if (shop != null) {
-//			shopModel = modelMapper.map(shop, ShopModel.class);
-//			shopModel.setAddressModel(modelMapper.map(shop.getAddress(), AddressModel.class));
-//		}
-
-		return shopModel;
+		List<Shop> shops = shopDao.findShopByNameShopLike(nameShop);
+		List<ShopModel> shopModels = new ArrayList<>();
+		if (shops != null) {
+			for(Shop shop : shops) {
+				ShopModel shopModel = new ShopModel();
+				shopModel = modelMapper.map(shop, ShopModel.class);
+				shopModel.setAddressModel(modelMapper.map(shop.getAddress(), AddressModel.class));
+				shopModels.add(shopModel);
+			}
+		}
+		return shopModels;
 	}
 
 	@Override
@@ -93,6 +97,18 @@ public class ShopService implements IShopService {
 		}
 
 		return shopModel;
+	}
+
+	@Override
+	public List<ShopModel> getListShop() {
+		List<Shop> shops = shopDao.findAll();
+		List<ShopModel> shopModels = new ArrayList<ShopModel>();
+		for(Shop shop : shops) {
+			ShopModel shopModel = new ShopModel();
+			shopModel = modelMapper.map(shop, ShopModel.class);
+			shopModels.add(shopModel);
+		}
+		return shopModels;
 	}
 
 }

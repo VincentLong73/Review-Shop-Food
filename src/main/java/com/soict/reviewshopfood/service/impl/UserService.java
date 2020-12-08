@@ -1,6 +1,9 @@
 package com.soict.reviewshopfood.service.impl;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang.RandomStringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,20 +30,14 @@ public class UserService implements IUserService{
 	private JavaMailSender emailSender;
 
 	@Override
-	public void addUser(UserModel userModel,String code) {
-		
-		
+	public void addUser(UserModel userModel) {
 		User user = modelMapper.map(userModel, User.class);
-		user.setRole(roleDao.findByCode(code));
-		
-		
+		user.setRole(roleDao.findByCode(user.getRole().getCode()));
 		userDao.saveAndFlush(user);
-		
 	}
 
 	@Override
 	public User findByUserName(String username) {
-		
 		return userDao.findByUserName(username);
 	}
 
@@ -80,6 +77,18 @@ public class UserService implements IUserService{
 			this.emailSender.send(message);
 		}
 		
+	}
+
+	@Override
+	public List<UserModel> getListUserByRoleId(String roleCode) {
+		List<User> users = userDao.findByRoleId(roleDao.findByCode(roleCode).getId());
+		List<UserModel> userModels = new ArrayList<UserModel>();
+		for(User user : users) {
+			UserModel userModel = new UserModel();
+			userModel = modelMapper.map(user, UserModel.class);
+			userModels.add(userModel);
+		}
+		return userModels;
 	}
 
 }

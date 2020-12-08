@@ -9,9 +9,11 @@ import com.soict.reviewshopfood.model.FoodModel;
 @Service
 public interface IFoodService {
 	
+	List<FoodModel> getListFood();
 	void addFood(FoodModel foodModel);
 	void editFood(FoodModel foodModel);
-	List<FoodModel> getListFoodByShopId(int shopId);
+	FoodModel getFoodByShopId(int shopId);
+	List<FoodModel> getListFoodByNameFood(String nameFood);
 	void deleteFood(int id);
 
 }

@@ -27,6 +27,6 @@ public class UserModel {
 	
 	private Date modifiedDate;
 
-	private RoleModel role;
+	private String codeRole;
 
 }

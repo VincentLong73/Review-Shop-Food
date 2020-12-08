@@ -62,9 +62,25 @@ public class FoodService implements IFoodService {
 	}
 
 	@Override
-	public List<FoodModel> getListFoodByShopId(int shopId) {
-		
-		List<Food> foods = foodDao.getListFoodByShopId(shopId);
+	public FoodModel getFoodByShopId(int shopId) {
+		Food food = foodDao.getFoodByShopId(shopId);
+		FoodModel foodModel = new FoodModel();
+		if(food!=null) {
+			foodModel.setId(food.getId());
+			foodModel.setName(food.getName());
+			foodModel.setContent(food.getContent());
+			foodModel.setPrice(food.getPrice());
+			foodModel.setCreatedAt(food.getCreatedAt());
+			foodModel.setImage(food.getImage());
+			foodModel.setCreatedBy(food.getCreatedBy());
+			foodModel.setShopId(shopId);
+		}
+		return foodModel;
+	}
+
+	@Override
+	public List<FoodModel> getListFoodByNameFood(String nameFood) {
+		List<Food> foods = foodDao.getListFoodByNameContaining(nameFood);
 		List<FoodModel> foodModels = new ArrayList<>();
 		
 		for(Food food : foods) {
@@ -78,7 +94,31 @@ public class FoodService implements IFoodService {
 			foodModel.setCreatedAt(food.getCreatedAt());
 			foodModel.setImage(food.getImage());
 			foodModel.setCreatedBy(food.getCreatedBy());
-			foodModel.setShopId(shopId);
+			foodModel.setShopId(food.getShop().getId());
+			
+			foodModels.add(foodModel);
+			
+		}
+		return foodModels;
+	}
+
+	@Override
+	public List<FoodModel> getListFood() {
+		List<Food> foods = foodDao.findAll();
+		List<FoodModel> foodModels = new ArrayList<>();
+		
+		for(Food food : foods) {
+			
+			FoodModel foodModel = new FoodModel();
+			
+			foodModel.setId(food.getId());
+			foodModel.setName(food.getName());
+			foodModel.setContent(food.getContent());
+			foodModel.setPrice(food.getPrice());
+			foodModel.setCreatedAt(food.getCreatedAt());
+			foodModel.setImage(food.getImage());
+			foodModel.setCreatedBy(food.getCreatedBy());
+			foodModel.setShopId(food.getShop().getId());
 			
 			foodModels.add(foodModel);
 			

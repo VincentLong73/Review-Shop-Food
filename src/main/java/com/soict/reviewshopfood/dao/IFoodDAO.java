@@ -13,5 +13,6 @@ import com.soict.reviewshopfood.entity.Food;
 @Repository
 public interface IFoodDAO extends JpaRepository<Food, Integer> {
 
-	List<Food> getListFoodByShopId(int shopId);
+	Food getFoodByShopId(int shopId);
+	List<Food> getListFoodByNameContaining(String nameFood);
 }
