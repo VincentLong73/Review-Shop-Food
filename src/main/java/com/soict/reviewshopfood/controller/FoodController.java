@@ -22,39 +22,24 @@ public class FoodController {
 	@Autowired
 	private FoodService foodService;
 	
-	@RequestMapping(value="/getFood/{id}")
-	public ResponseEntity<List<FoodModel>> getFood(@PathVariable("id") int id){
-		
-		
-		
-		return new ResponseEntity<List<FoodModel>>(foodService.getListFoodByShopId(id), HttpStatus.OK);
-		
-		
+	@RequestMapping(value="/getFood",produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+	public ResponseEntity<FoodModel> getFood(int id){
+		return new ResponseEntity<FoodModel>(foodService.getFoodByShopId(id), HttpStatus.OK);	
 	}
 	
-//	@RequestMapping(value="/getFoodByNameShop/{nameFood}")
-//	public ResponseEntity<ShopModel> getFoodByNameShop(@PathVariable("nameShop") String nameShop){
-//		
-//		
-//		
-//		return new ResponseEntity<ShopModel>(shopService.findShopByNameShop(nameShop), HttpStatus.OK);
-//		
-//		
-//	}
+	@RequestMapping(value="/getFoodByNameFood",produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+	public ResponseEntity<List<FoodModel>> getFoodByNameFood(@PathVariable("nameShop") String nameShop){
+		return new ResponseEntity<List<FoodModel>>(foodService.getListFoodByNameFood(nameShop), HttpStatus.OK);
+	}
 	
 	@RequestMapping(value="/addFood", method = RequestMethod.POST ,produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 	public ResponseEntity<Object> addFood(FoodModel foodModel){
-		
 		foodService.addFood(foodModel);
-		
 		return new ResponseEntity<Object>("Add food successfully!", HttpStatus.OK);
-		
-		
 	}
 	
 	@PutMapping(value="/editFood" ,produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 	public ResponseEntity<Object> editFood(FoodModel foodModel){
-		
 		foodService.editFood(foodModel);
 		return new ResponseEntity<Object>("Edit successfully!", HttpStatus.OK);
 	}

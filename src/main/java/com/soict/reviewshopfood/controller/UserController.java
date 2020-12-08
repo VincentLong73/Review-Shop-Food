@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -69,10 +68,10 @@ public class UserController {
 	}
 
 	
-	@PostMapping(value="/addUser/{code}",produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-	public ResponseEntity<Object> addUSer(UserModel user,@PathVariable("code") String code){
+	@PostMapping(value="/addUser",produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+	public ResponseEntity<Object> addUSer(UserModel userModel){
 		
-		userService.addUser(user,code);
+		userService.addUser(userModel);
 		return new ResponseEntity<Object>("Add a new user successfully",HttpStatus.OK);
 	}
 	

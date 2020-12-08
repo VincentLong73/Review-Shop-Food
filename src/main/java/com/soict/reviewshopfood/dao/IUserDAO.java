@@ -1,5 +1,7 @@
 package com.soict.reviewshopfood.dao;
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,4 +15,5 @@ public interface IUserDAO extends JpaRepository<User, Integer>{
 
 	User findByUserName(String username);
 	User findByEmail(String email);
+	List<User> findByRoleId(int roleId);
 }
