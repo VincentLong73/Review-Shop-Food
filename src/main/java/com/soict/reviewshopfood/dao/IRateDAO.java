@@ -1,5 +1,7 @@
 package com.soict.reviewshopfood.dao;
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,5 +13,5 @@ import com.soict.reviewshopfood.entity.Rate;
 @Repository
 public interface IRateDAO extends JpaRepository<Rate, Integer> {
 
-	
+	List<Rate> getRateByFoodId(int foodId);
 }

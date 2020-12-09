@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.soict.reviewshopfood.dao.IFoodDAO;
 import com.soict.reviewshopfood.dao.IShopDAO;
 import com.soict.reviewshopfood.entity.Food;
+import com.soict.reviewshopfood.entity.ImageFood;
 import com.soict.reviewshopfood.model.FoodModel;
 import com.soict.reviewshopfood.service.IFoodService;
 
@@ -31,7 +32,12 @@ public class FoodService implements IFoodService {
 		food.setContent(foodModel.getContent());
 		food.setPrice(foodModel.getPrice());
 		food.setCreatedAt(new Date());
-		food.setImage(foodModel.getName());
+		List<String> urls = new ArrayList<String>();
+		for(ImageFood imageFood : food.getImageFoods()) {
+			String url = imageFood.getImageUrl();
+			urls.add(url);
+		}
+		foodModel.setImageUrls(urls);
 		food.setCreatedBy(foodModel.getCreatedBy());
 		food.setShop(shopDao.getOne(foodModel.getShopId()));
 		
@@ -49,7 +55,12 @@ public class FoodService implements IFoodService {
 		food.setName(foodModel.getName());
 		food.setContent(foodModel.getContent());
 		food.setPrice(foodModel.getPrice());
-		food.setImage(foodModel.getImage());
+		List<String> urls = new ArrayList<String>();
+		for(ImageFood imageFood : food.getImageFoods()) {
+			String url = imageFood.getImageUrl();
+			urls.add(url);
+		}
+		foodModel.setImageUrls(urls);
 		
 		foodDao.save(food);
 		
@@ -62,20 +73,32 @@ public class FoodService implements IFoodService {
 	}
 
 	@Override
-	public FoodModel getFoodByShopId(int shopId) {
-		Food food = foodDao.getFoodByShopId(shopId);
-		FoodModel foodModel = new FoodModel();
-		if(food!=null) {
+	public List<FoodModel> getFoodByShopId(int shopId) {
+		List<Food> foods = foodDao.getFoodByShopId(shopId);
+		List<FoodModel> foodModels = new ArrayList<>();
+		
+		for(Food food : foods) {
+			
+			FoodModel foodModel = new FoodModel();
+			
 			foodModel.setId(food.getId());
 			foodModel.setName(food.getName());
 			foodModel.setContent(food.getContent());
 			foodModel.setPrice(food.getPrice());
 			foodModel.setCreatedAt(food.getCreatedAt());
-			foodModel.setImage(food.getImage());
+			List<String> urls = new ArrayList<String>();
+			for(ImageFood imageFood : food.getImageFoods()) {
+				String url = imageFood.getImageUrl();
+				urls.add(url);
+			}
+			foodModel.setImageUrls(urls);
 			foodModel.setCreatedBy(food.getCreatedBy());
-			foodModel.setShopId(shopId);
+			foodModel.setShopId(food.getShop().getId());
+			
+			foodModels.add(foodModel);
+			
 		}
-		return foodModel;
+		return foodModels;
 	}
 
 	@Override
@@ -92,7 +115,12 @@ public class FoodService implements IFoodService {
 			foodModel.setContent(food.getContent());
 			foodModel.setPrice(food.getPrice());
 			foodModel.setCreatedAt(food.getCreatedAt());
-			foodModel.setImage(food.getImage());
+			List<String> urls = new ArrayList<String>();
+			for(ImageFood imageFood : food.getImageFoods()) {
+				String url = imageFood.getImageUrl();
+				urls.add(url);
+			}
+			foodModel.setImageUrls(urls);
 			foodModel.setCreatedBy(food.getCreatedBy());
 			foodModel.setShopId(food.getShop().getId());
 			
@@ -116,7 +144,12 @@ public class FoodService implements IFoodService {
 			foodModel.setContent(food.getContent());
 			foodModel.setPrice(food.getPrice());
 			foodModel.setCreatedAt(food.getCreatedAt());
-			foodModel.setImage(food.getImage());
+			List<String> urls = new ArrayList<String>();
+			for(ImageFood imageFood : food.getImageFoods()) {
+				String url = imageFood.getImageUrl();
+				urls.add(url);
+			}
+			foodModel.setImageUrls(urls);
 			foodModel.setCreatedBy(food.getCreatedBy());
 			foodModel.setShopId(food.getShop().getId());
 			

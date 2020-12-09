@@ -13,6 +13,6 @@ import com.soict.reviewshopfood.entity.Shop;
 @Repository
 public interface IShopDAO extends JpaRepository<Shop, Integer> {
 	
-	List<Shop> findShopByNameShopLike(String nameShop);
+	List<Shop> findShopByNameShopContaining(String nameShop);
 
 }

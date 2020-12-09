@@ -21,8 +21,8 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="rate")
-public class Rate implements Serializable{/**
+@Table(name="image_food")
+public class ImageFood implements Serializable{/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
@@ -31,13 +31,13 @@ public class Rate implements Serializable{/**
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
+	@Column(name="image_url")
+	private String imageUrl;
+	
 	@ManyToOne
 	@JoinColumn(name="food_id")
 	@EqualsAndHashCode.Exclude
     @ToString.Exclude
-	private Food food;
-	
-	@Column(name="mark_rate")
-	private int markRate;
+    private Food food;
 
 }

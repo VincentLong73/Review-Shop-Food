@@ -22,14 +22,14 @@ public class FoodController {
 	@Autowired
 	private FoodService foodService;
 	
-	@RequestMapping(value="/getFood",produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-	public ResponseEntity<FoodModel> getFood(int id){
-		return new ResponseEntity<FoodModel>(foodService.getFoodByShopId(id), HttpStatus.OK);	
+	@RequestMapping(value="/getFood/{id}")
+	public ResponseEntity<List<FoodModel>> getFood(@PathVariable("id")int id){
+		return new ResponseEntity<List<FoodModel>>(foodService.getFoodByShopId(id), HttpStatus.OK);	
 	}
 	
-	@RequestMapping(value="/getFoodByNameFood",produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-	public ResponseEntity<List<FoodModel>> getFoodByNameFood(@PathVariable("nameShop") String nameShop){
-		return new ResponseEntity<List<FoodModel>>(foodService.getListFoodByNameFood(nameShop), HttpStatus.OK);
+	@RequestMapping(value="/getFoodByNameFood/{nameFood}")
+	public ResponseEntity<List<FoodModel>> getFoodByNameFood(@PathVariable("nameFood") String nameFood){
+		return new ResponseEntity<List<FoodModel>>(foodService.getListFoodByNameFood(nameFood), HttpStatus.OK);
 	}
 	
 	@RequestMapping(value="/addFood", method = RequestMethod.POST ,produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
