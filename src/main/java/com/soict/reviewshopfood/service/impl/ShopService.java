@@ -32,7 +32,7 @@ public class ShopService implements IShopService {
 	@Override
 	public List<ShopModel> findShopByNameShop(String nameShop) {
 
-		List<Shop> shops = shopDao.findShopByNameShopLike(nameShop);
+		List<Shop> shops = shopDao.findShopByNameShopContaining(nameShop);
 		List<ShopModel> shopModels = new ArrayList<>();
 		if (shops != null) {
 			for(Shop shop : shops) {

@@ -12,7 +12,7 @@ public interface IFoodService {
 	List<FoodModel> getListFood();
 	void addFood(FoodModel foodModel);
 	void editFood(FoodModel foodModel);
-	FoodModel getFoodByShopId(int shopId);
+	List<FoodModel> getFoodByShopId(int shopId);
 	List<FoodModel> getListFoodByNameFood(String nameFood);
 	void deleteFood(int id);
 

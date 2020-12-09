@@ -1,6 +1,7 @@
 package com.soict.reviewshopfood.model;
 
 import java.util.Date;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,7 +16,9 @@ public class FoodModel {
 
 	private String name;
 
-	private String image;
+	private List<String> imageUrls;
+	
+	private List<Integer> markRates;
 
 	private String content;
 

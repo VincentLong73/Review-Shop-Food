@@ -40,9 +40,6 @@ public class Food implements Serializable{
 	@Column(name="name")
 	private String name;
 	
-	@Column(name="image")
-	private String image;
-	
 	@Column(name="content")
 	private String content;
 	
@@ -59,6 +56,11 @@ public class Food implements Serializable{
 	@EqualsAndHashCode.Exclude
     @ToString.Exclude
 	private List<Rate> rates = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "food", cascade = CascadeType.ALL )
+	@EqualsAndHashCode.Exclude
+    @ToString.Exclude
+	private List<ImageFood> imageFoods = new ArrayList<>();
 
 	@OneToOne
 	@JoinColumn(name="shop_id")
