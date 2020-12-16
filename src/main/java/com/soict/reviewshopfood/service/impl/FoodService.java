@@ -1,5 +1,6 @@
 package com.soict.reviewshopfood.service.impl;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -31,7 +32,9 @@ public class FoodService implements IFoodService {
 		food.setName(foodModel.getName());
 		food.setContent(foodModel.getContent());
 		food.setPrice(foodModel.getPrice());
+		food.setView(0);
 		food.setCreatedAt(new Date());
+		food.setActive(true);
 		List<String> urls = new ArrayList<String>();
 		for(ImageFood imageFood : food.getImageFoods()) {
 			String url = imageFood.getImageUrl();
@@ -68,8 +71,9 @@ public class FoodService implements IFoodService {
 
 	@Override
 	public void deleteFood(int id) {
-		// TODO Auto-generated method stub
-		
+		Food food = foodDao.getOne(id);
+		food.setActive(false);
+		foodDao.saveAndFlush(food);
 	}
 
 	@Override
@@ -86,6 +90,7 @@ public class FoodService implements IFoodService {
 			foodModel.setContent(food.getContent());
 			foodModel.setPrice(food.getPrice());
 			foodModel.setCreatedAt(food.getCreatedAt());
+			foodModel.setActive(food.isActive());
 			List<String> urls = new ArrayList<String>();
 			for(ImageFood imageFood : food.getImageFoods()) {
 				String url = imageFood.getImageUrl();
@@ -115,6 +120,7 @@ public class FoodService implements IFoodService {
 			foodModel.setContent(food.getContent());
 			foodModel.setPrice(food.getPrice());
 			foodModel.setCreatedAt(food.getCreatedAt());
+			foodModel.setActive(food.isActive());
 			List<String> urls = new ArrayList<String>();
 			for(ImageFood imageFood : food.getImageFoods()) {
 				String url = imageFood.getImageUrl();
@@ -144,6 +150,67 @@ public class FoodService implements IFoodService {
 			foodModel.setContent(food.getContent());
 			foodModel.setPrice(food.getPrice());
 			foodModel.setCreatedAt(food.getCreatedAt());
+			foodModel.setActive(food.isActive());
+			List<String> urls = new ArrayList<String>();
+			for(ImageFood imageFood : food.getImageFoods()) {
+				String url = imageFood.getImageUrl();
+				urls.add(url);
+			}
+			foodModel.setImageUrls(urls);
+			foodModel.setCreatedBy(food.getCreatedBy());
+			foodModel.setShopId(food.getShop().getId());
+			
+			foodModels.add(foodModel);
+			
+		}
+		return foodModels;
+	}
+
+	@Override
+	public List<FoodModel> getFoodByShopIdAndActive(int shopId, boolean active) {
+		List<Food> foods = foodDao.getFoodByShopIdAndActive(shopId, active);
+		List<FoodModel> foodModels = new ArrayList<>();
+		
+		for(Food food : foods) {
+			
+			FoodModel foodModel = new FoodModel();
+			
+			foodModel.setId(food.getId());
+			foodModel.setName(food.getName());
+			foodModel.setContent(food.getContent());
+			foodModel.setPrice(food.getPrice());
+			foodModel.setCreatedAt(food.getCreatedAt());
+			foodModel.setActive(food.isActive());
+			List<String> urls = new ArrayList<String>();
+			for(ImageFood imageFood : food.getImageFoods()) {
+				String url = imageFood.getImageUrl();
+				urls.add(url);
+			}
+			foodModel.setImageUrls(urls);
+			foodModel.setCreatedBy(food.getCreatedBy());
+			foodModel.setShopId(food.getShop().getId());
+			
+			foodModels.add(foodModel);
+			
+		}
+		return foodModels;
+	}
+
+	@Override
+	public List<FoodModel> getListFoodByNameContainingAndActive(String nameFood, boolean active) throws SQLException {
+		List<Food> foods = foodDao.getListFoodByNameContainingAndActive(nameFood, active);
+		List<FoodModel> foodModels = new ArrayList<>();
+		
+		for(Food food : foods) {
+			
+			FoodModel foodModel = new FoodModel();
+			
+			foodModel.setId(food.getId());
+			foodModel.setName(food.getName());
+			foodModel.setContent(food.getContent());
+			foodModel.setPrice(food.getPrice());
+			foodModel.setCreatedAt(food.getCreatedAt());
+			foodModel.setActive(food.isActive());
 			List<String> urls = new ArrayList<String>();
 			for(ImageFood imageFood : food.getImageFoods()) {
 				String url = imageFood.getImageUrl();

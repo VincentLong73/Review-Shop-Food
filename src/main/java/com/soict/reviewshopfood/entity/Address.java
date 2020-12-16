@@ -39,5 +39,8 @@ public class Address implements Serializable{/**
 	
 	@Column(name="street")
 	private String street;
+	
+	@Column(name="active")
+	private boolean active;
 
 }

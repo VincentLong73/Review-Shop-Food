@@ -1,6 +1,7 @@
 package com.soict.reviewshopfood.filter_handler;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -23,7 +24,7 @@ import com.soict.reviewshopfood.service.IUserService;
 
 public class JwtAuthenticationTokenFilter extends UsernamePasswordAuthenticationFilter{
 	
-	private final static String TOKEN_HEADER = "authorization";
+	private final static String TOKEN_HEADER = "Authorization";
 
 	@Autowired
 	private JwtService jwtService;
@@ -38,24 +39,28 @@ public class JwtAuthenticationTokenFilter extends UsernamePasswordAuthentication
 		String authToken = httpRequest.getHeader(TOKEN_HEADER);
 		
 		if(jwtService.validateToken(authToken)) {
-			
-			String username = jwtService.getUsernameToken(authToken);
-			
-			com.soict.reviewshopfood.entity.User user = userService.findByUserName(username);
-			
-			if(user!=null) {
+			String email = jwtService.getEmailToken(authToken);
+			com.soict.reviewshopfood.entity.User user;
+			try {
+				user = userService.findByEmail(email);
+				if(user!=null) {
+					
+					boolean enable = true;
+					boolean accountNonExpired = true;
+					boolean credentialsNonExpired = true;
+					UserDetails userDetail = new User(email, user.getPassword(),enable,accountNonExpired,credentialsNonExpired,accountNonExpired, user.getAuthorities());
 				
-				boolean enable = true;
-				boolean accountNonExpired = true;
-				boolean credentialsNonExpired = true;
-				UserDetails userDetail = new User(username, user.getPassword(),enable,accountNonExpired,credentialsNonExpired,accountNonExpired, user.getAuthorities());
-			
+					UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetail, null,userDetail.getAuthorities());
+					authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpRequest));
+					SecurityContextHolder.getContext().setAuthentication(authentication);
 				
-				UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetail, null,userDetail.getAuthorities());
-				authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpRequest));
-				SecurityContextHolder.getContext().setAuthentication(authentication);
-			
+				}
+			} catch (SQLException e) {
+				
+				e.printStackTrace();
 			}
+			
+			
 			
 		}
 		

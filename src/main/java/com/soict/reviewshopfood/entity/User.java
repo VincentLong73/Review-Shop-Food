@@ -39,7 +39,6 @@ public class User implements Serializable{/**
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
-	
 	@Column(name="username")
 	private String userName;
 	
@@ -52,8 +51,8 @@ public class User implements Serializable{/**
 	@Column(name="email")
 	private String email;
 	
-	@Column(name="status")
-	private int status;
+	@Column(name="active")
+	private boolean active;
 	
 	@Column(name="created_at")
 	private Date createdAt;

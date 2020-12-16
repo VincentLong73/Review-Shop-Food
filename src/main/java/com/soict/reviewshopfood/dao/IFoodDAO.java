@@ -14,5 +14,8 @@ import com.soict.reviewshopfood.entity.Food;
 public interface IFoodDAO extends JpaRepository<Food, Integer> {
 
 	List<Food> getFoodByShopId(int shopId);
+	List<Food> getFoodByShopIdAndActive(int shopId,boolean active);
+	
 	List<Food> getListFoodByNameContaining(String nameFood);
+	List<Food> getListFoodByNameContainingAndActive(String nameFood,boolean active);
 }

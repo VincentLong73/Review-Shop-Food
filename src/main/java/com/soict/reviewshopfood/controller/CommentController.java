@@ -1,5 +1,6 @@
 package com.soict.reviewshopfood.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,25 +17,37 @@ import com.soict.reviewshopfood.model.CommentModel;
 import com.soict.reviewshopfood.service.impl.CommentService;
 
 @RestController
-@RequestMapping(value="/review-shop-food")
+@RequestMapping(value="/api/comment")
 public class CommentController {
 	
 	@Autowired
 	private CommentService commentService;
 	
 	@GetMapping(value="/getListComment/{foodId}")
-	public ResponseEntity<List<CommentModel>> getListCommentByIdFood(@PathVariable("foodId") int foodId){
-		
-		return new ResponseEntity<List<CommentModel>>(commentService.getListCommentbyIdFood(foodId),HttpStatus.OK);
+	public ResponseEntity<Object> getListCommentByIdFood(@PathVariable("foodId") int foodId){
+		HttpStatus httpStatus = null;
+		List<CommentModel> commentModels = new ArrayList<CommentModel>();
+		try {
+			commentModels = commentService.getListCommentbyIdFood(foodId);
+			httpStatus = HttpStatus.OK;
+		}catch(Exception e) {
+			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+			System.out.println(e);
+		}
+		return new ResponseEntity<Object>(commentModels,httpStatus);
 	}
 	
 	@PostMapping(value="/addComment",produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 	public ResponseEntity<Object> addComment(CommentModel commentModel){
-		
-		commentService.addComment(commentModel);
-		
-		
-		return new ResponseEntity<Object>("Add Comment Successfully!",HttpStatus.OK);
+		HttpStatus httpStatus = null;
+		try {
+			commentService.addComment(commentModel);
+			httpStatus = HttpStatus.OK;
+		}catch(Exception e) {
+			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+			System.out.println(e);
+		}
+		return new ResponseEntity<Object>(httpStatus);
 	}
 	
 //	@DeleteMapping(value="deleteComment/{id}")

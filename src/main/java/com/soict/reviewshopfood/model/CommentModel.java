@@ -12,14 +12,9 @@ import lombok.NoArgsConstructor;
 public class CommentModel {
 
 	private int id;
-
 	private String content;
-
 	private int userId;
-
 	private int foodId;
-
 	private Date createdAt;
-
 	private int commentParentId;
 }
