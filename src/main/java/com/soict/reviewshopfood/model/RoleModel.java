@@ -10,9 +10,7 @@ import lombok.NoArgsConstructor;
 public class RoleModel {
 
 	private int id;
-
 	private String roleName;
-
 	private String code;
 
 }

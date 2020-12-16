@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.soict.reviewshopfood.dao.IAddressDAO;
 import com.soict.reviewshopfood.dao.IShopDAO;
+import com.soict.reviewshopfood.entity.Address;
 import com.soict.reviewshopfood.entity.Shop;
 import com.soict.reviewshopfood.model.AddressModel;
 import com.soict.reviewshopfood.model.ShopModel;
@@ -19,13 +20,10 @@ public class ShopService implements IShopService {
 
 	@Autowired
 	private IShopDAO shopDao;
-	
 	@Autowired
 	private IAddressDAO addressDao;
-	
 	@Autowired
 	private AddressService addressService;
-
 	@Autowired
 	private ModelMapper modelMapper;
 
@@ -47,29 +45,19 @@ public class ShopService implements IShopService {
 
 	@Override
 	public void addShop(ShopModel shopModel) {
-
 		Shop shop = modelMapper.map(shopModel, Shop.class);
-
 		addressService.addAddress(shopModel.getAddressModel());
-		
 		AddressModel addressModel = shopModel.getAddressModel();
-		
 		shop.setAddress(addressDao.findByDistrictAndVillageAndStreet(addressModel.getDistrict(), addressModel.getVillage(),addressModel.getStreet()));
-
 		shopDao.saveAndFlush(shop);
 	}
 
 	@Override
 	public void editShop(ShopModel shopModel) {
-
 		Shop shop = shopDao.getOne(shopModel.getId());
-		
 		shop = modelMapper.map(shopModel, Shop.class);
-		
 		addressService.editAddress(shopModel.getAddressModel());
-
 		shop.setAddress(addressDao.getOne(shopModel.getAddressModel().getId()));
-
 		shopDao.save(shop);
 
 	}
@@ -79,9 +67,12 @@ public class ShopService implements IShopService {
 
 		if (shopDao.getOne(id) != null) {
 			int addressId = shopDao.getOne(id).getAddress().getId();
-			shopDao.deleteById(id);
-			addressDao.deleteById(addressId);
-			
+			Shop shop = shopDao.getOne(id);
+			shop.setActive(false);
+			shopDao.saveAndFlush(shop);
+			Address address = addressDao.getOne(addressId);
+			address.setActive(false);
+			addressDao.saveAndFlush(address);
 		}
 
 	}
@@ -95,7 +86,6 @@ public class ShopService implements IShopService {
 			shopModel = modelMapper.map(shop, ShopModel.class);
 			shopModel.setAddressModel(modelMapper.map(shop.getAddress(), AddressModel.class));
 		}
-
 		return shopModel;
 	}
 

@@ -11,22 +11,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserModel {
 	
+	
 	private int id;
-
 	private String userName;
-	
 	private String password;
-	
 	private String fullName;
-	
 	private String email;
-	
-	private int status;
-
+	private boolean active;
 	private Date createdAt;
-	
 	private Date modifiedDate;
-
 	private String codeRole;
+	
+	
 
 }

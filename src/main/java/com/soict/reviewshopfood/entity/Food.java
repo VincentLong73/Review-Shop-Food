@@ -46,11 +46,17 @@ public class Food implements Serializable{
 	@Column(name="price")
 	private float price;
 	
+	@Column(name="view")
+	private int view;
+	
 	@Column(name="created_at")
 	private Date createdAt;
 	
 	@Column(name="created_by")
 	private String createdBy;
+	
+	@Column(name="active")
+	private boolean active;
 	
 	@OneToMany(mappedBy = "food", cascade = CascadeType.ALL )
 	@EqualsAndHashCode.Exclude

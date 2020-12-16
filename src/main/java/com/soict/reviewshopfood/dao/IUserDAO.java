@@ -13,7 +13,6 @@ import com.soict.reviewshopfood.entity.User;
 @Repository
 public interface IUserDAO extends JpaRepository<User, Integer>{
 
-	User findByUserName(String username);
 	User findByEmail(String email);
 	List<User> findByRoleId(int roleId);
 }

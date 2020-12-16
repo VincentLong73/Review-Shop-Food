@@ -1,5 +1,6 @@
 package com.soict.reviewshopfood.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,32 +17,95 @@ import com.soict.reviewshopfood.model.FoodModel;
 import com.soict.reviewshopfood.service.impl.FoodService;
 
 @RestController
-@RequestMapping(value="/review-shop-food")
+@RequestMapping(value="/api/food")
 public class FoodController {
 	
 	@Autowired
 	private FoodService foodService;
-	
+	//lay mon an (ke ca da active = false)
 	@RequestMapping(value="/getFood/{id}")
-	public ResponseEntity<List<FoodModel>> getFood(@PathVariable("id")int id){
-		return new ResponseEntity<List<FoodModel>>(foodService.getFoodByShopId(id), HttpStatus.OK);	
+	public ResponseEntity<Object> getFood(@PathVariable("id")int id){
+		HttpStatus httpStatus = null;
+		List<FoodModel> foodModels = new ArrayList<FoodModel>();
+		try {
+			foodModels = foodService.getFoodByShopId(id);
+			httpStatus = HttpStatus.OK;
+		}catch(Exception e) {
+			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+			System.out.println(e);
+		}
+		return new ResponseEntity<Object>(foodModels, httpStatus);	
 	}
-	
+	//lay cac mon an con actice
+	@RequestMapping(value="/getFoodAndActive/{id}")
+	public ResponseEntity<Object> getFoodAndActive(@PathVariable("id")int id){
+		HttpStatus httpStatus = null;
+		List<FoodModel> foodModels = new ArrayList<FoodModel>();
+		try {
+			foodModels = foodService.getFoodByShopIdAndActive(id, true);
+			httpStatus = HttpStatus.OK;
+		}catch(Exception e) {
+			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+			System.out.println(e);
+		}
+		return new ResponseEntity<Object>(foodModels, httpStatus);	
+	}
+	//lay mon an (ke ca da active = false) theo ten
 	@RequestMapping(value="/getFoodByNameFood/{nameFood}")
-	public ResponseEntity<List<FoodModel>> getFoodByNameFood(@PathVariable("nameFood") String nameFood){
-		return new ResponseEntity<List<FoodModel>>(foodService.getListFoodByNameFood(nameFood), HttpStatus.OK);
+	public ResponseEntity<Object> getFoodByNameFood(@PathVariable("nameFood") String nameFood){
+		HttpStatus httpStatus = null;
+		List<FoodModel> foodModels = new ArrayList<FoodModel>();
+		try {
+			foodModels = foodService.getListFoodByNameFood(nameFood);
+			httpStatus = HttpStatus.OK;
+		}catch(Exception e) {
+			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+			System.out.println(e);
+		}
+		return new ResponseEntity<Object>(foodModels, httpStatus);
+	}
+	//lay cac mon an con actice theo ten
+	@RequestMapping(value="/getListFoodByNameContainingAndActive/{nameFood}")
+	public ResponseEntity<Object> getListFoodByNameContainingAndActive(@PathVariable("nameFood") String nameFood){
+		HttpStatus httpStatus = null;
+		List<FoodModel> foodModels = new ArrayList<FoodModel>();
+		try {
+			foodModels = foodService.getListFoodByNameContainingAndActive(nameFood, true);
+			httpStatus = HttpStatus.OK;
+		}catch(Exception e) {
+			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+			System.out.println(e);
+		}
+		return new ResponseEntity<Object>(foodModels, httpStatus);
 	}
 	
 	@RequestMapping(value="/addFood", method = RequestMethod.POST ,produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 	public ResponseEntity<Object> addFood(FoodModel foodModel){
-		foodService.addFood(foodModel);
-		return new ResponseEntity<Object>("Add food successfully!", HttpStatus.OK);
+		HttpStatus httpStatus = null;
+		try {
+			foodService.addFood(foodModel);
+			httpStatus = HttpStatus.OK;
+		}catch(Exception e) {
+			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+			System.out.println(e);
+		}
+		
+		return new ResponseEntity<Object>(httpStatus);
 	}
 	
 	@PutMapping(value="/editFood" ,produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 	public ResponseEntity<Object> editFood(FoodModel foodModel){
-		foodService.editFood(foodModel);
-		return new ResponseEntity<Object>("Edit successfully!", HttpStatus.OK);
+		
+		HttpStatus httpStatus = null;
+		try {
+			foodService.editFood(foodModel);
+			httpStatus = HttpStatus.OK;
+		}catch(Exception e) {
+			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+			System.out.println(e);
+		}
+		
+		return new ResponseEntity<Object>(httpStatus);
 	}
 
 }

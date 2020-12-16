@@ -1,5 +1,6 @@
 package com.soict.reviewshopfood.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,37 +19,80 @@ import com.soict.reviewshopfood.model.ShopModel;
 import com.soict.reviewshopfood.service.impl.ShopService;
 
 @RestController
-@RequestMapping(value="/review-shop-food")
+@RequestMapping(value="/api/shop")
 public class ShopController {
 
 	@Autowired
 	private ShopService shopService;
 	
 	@RequestMapping(value="/getShop/{id}")
-	public ResponseEntity<ShopModel> getShopById(@PathVariable("id") int id){
-		return new ResponseEntity<ShopModel>(shopService.findShopById(id), HttpStatus.OK);
+	public ResponseEntity<Object> getShopById(@PathVariable("id") int id){
+		HttpStatus httpStatus = null;
+		ShopModel shopModel = null;
+		try {
+			shopModel = shopService.findShopById(id);
+			httpStatus = HttpStatus.OK;
+		}catch(Exception e) {
+			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+			System.out.println(e);
+		}
+		return new ResponseEntity<Object>(shopModel, httpStatus);
 	}
 	
 	@RequestMapping(value="/getShopByNameShop/{nameShop}")
-	public ResponseEntity<List<ShopModel>> getShopByNameShop(@PathVariable("nameShop") String nameShop){
-		return new ResponseEntity<List<ShopModel>>(shopService.findShopByNameShop(nameShop), HttpStatus.OK);
+	public ResponseEntity<Object> getShopByNameShop(@PathVariable("nameShop") String nameShop){
+		HttpStatus httpStatus = null;
+		List<ShopModel> shopModels = new ArrayList<ShopModel>();
+		try {
+			shopModels = shopService.findShopByNameShop(nameShop);
+			httpStatus = HttpStatus.OK;
+		}catch(Exception e) {
+			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+			System.out.println(e);
+		}
+		return new ResponseEntity<Object>(shopModels, httpStatus);
 	}
 	
 	@RequestMapping(value="/addShop", method = RequestMethod.POST ,produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-	public ResponseEntity<Object> addShop(@RequestBody ShopModel shopModel){
-		shopService.addShop(shopModel);
-		return new ResponseEntity<Object>("Add successfully!", HttpStatus.OK);
+	public ResponseEntity<Object> addShop(ShopModel shopModel){
+		HttpStatus httpStatus = null;
+		try {
+			shopService.addShop(shopModel);
+			httpStatus = HttpStatus.OK;
+		}catch(Exception e) {
+			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+			System.out.println(e);
+		}
+		
+		return new ResponseEntity<Object>(httpStatus);
 	}
 	
 	@PutMapping(value="/editShop" ,produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 	public ResponseEntity<Object> editShop(@RequestBody ShopModel shopModel){
-		shopService.editShop(shopModel);
-		return new ResponseEntity<Object>("Edit successfully!", HttpStatus.OK);
+		HttpStatus httpStatus = null;
+		try {
+			shopService.editShop(shopModel);
+			httpStatus = HttpStatus.OK;
+		}catch(Exception e) {
+			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+			System.out.println(e);
+		}
+		
+		return new ResponseEntity<Object>(httpStatus);
 	}
 	
 	@DeleteMapping(value="/deleteShop",produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> deleteShop(int id){
-		shopService.deleteShop(id);
-		return new ResponseEntity<Object>("Edit successfully!", HttpStatus.OK);
+		
+		HttpStatus httpStatus = null;
+		try {
+			shopService.deleteShop(id);
+			httpStatus = HttpStatus.OK;
+		}catch(Exception e) {
+			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+			System.out.println(e);
+		}
+		
+		return new ResponseEntity<Object>(httpStatus);
 	}
 }

@@ -10,9 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ShopModel {
-
 	private int id;
-
 	private String nameShop;
 	private String image;
 	private Date createdAt;
@@ -20,5 +18,5 @@ public class ShopModel {
 	private String createdBy;
 	private String modifiedBy;
 	private AddressModel addressModel;
-
+	private boolean active;
 }

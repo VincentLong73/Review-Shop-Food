@@ -10,9 +10,7 @@ import lombok.NoArgsConstructor;
 public class RateModel {
 
 	private int id;
-
 	private int foodId;
-
 	private int markRate;
 
 }

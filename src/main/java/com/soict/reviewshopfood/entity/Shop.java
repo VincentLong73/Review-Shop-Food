@@ -51,5 +51,8 @@ public class Shop implements Serializable {/**
 	@OneToOne
 	@JoinColumn(name="address_id")
 	private Address address;
+	
+	@Column(name="active")
+	private boolean active;
 
 }

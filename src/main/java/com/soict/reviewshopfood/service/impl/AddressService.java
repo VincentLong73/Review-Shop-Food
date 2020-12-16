@@ -18,23 +18,23 @@ public class AddressService implements IAddressService {
 	@Autowired
 	private ModelMapper modelMapper;
 
-	@Override
-	public AddressModel findByDistrict(String district) {
-		
-		return modelMapper.map(addressDao.findByDistrict(district),AddressModel.class);
-	}
-
-	@Override
-	public AddressModel findByVillage(String village) {
-		
-		return modelMapper.map(addressDao.findByVillage(village),AddressModel.class);
-	}
-
-	@Override
-	public AddressModel findByStreet(String street) {
-		
-		return modelMapper.map(addressDao.findByStreet(street),AddressModel.class);
-	}
+//	@Override
+//	public AddressModel findByDistrict(String district) {
+//		
+//		return modelMapper.map(addressDao.findByDistrict(district),AddressModel.class);
+//	}
+//
+//	@Override
+//	public AddressModel findByVillage(String village) {
+//		
+//		return modelMapper.map(addressDao.findByVillage(village),AddressModel.class);
+//	}
+//
+//	@Override
+//	public AddressModel findByStreet(String street) {
+//		
+//		return modelMapper.map(addressDao.findByStreet(street),AddressModel.class);
+//	}
 
 	@Override
 	public void addAddress(AddressModel addressModel) {
