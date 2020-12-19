@@ -3,9 +3,8 @@ package com.soict.reviewshopfood.service.impl;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-
-import javax.servlet.http.Cookie;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.modelmapper.ModelMapper;
@@ -39,10 +38,17 @@ public class UserService implements IUserService, UserDetailsService{
 	private JavaMailSender emailSender;
 
 	@Override
-	public void addUser(UserModel userModel) {
+	public boolean addUser(UserModel userModel) {
 		User user = modelMapper.map(userModel, User.class);
-		user.setRole(roleDao.findByCode(user.getRole().getCode()));
-		userDao.saveAndFlush(user);
+		if(userDao.findByEmail(user.getEmail())==null) {
+			user.setCreatedAt(new Date());
+			user.setActive(true);
+			user.setRole(roleDao.findByCode(user.getRole().getCode()));
+			userDao.saveAndFlush(user);
+			return true;
+		}
+		return false;
+		
 	}
 
 	@Override
@@ -51,7 +57,7 @@ public class UserService implements IUserService, UserDetailsService{
 	}
 
 	@Override
-	public boolean checkLogin(User user,Cookie[] cookies) {
+	public boolean checkLogin(User user) {
 		User userfind = userDao.findByEmail(user.getEmail());
 		if (userfind == null) {
 			return false;
@@ -100,6 +106,7 @@ public class UserService implements IUserService, UserDetailsService{
 		UserModel userModel = new UserModel();
 		if(user!=null) {
 			userModel = modelMapper.map(user, UserModel.class);
+			userModel.setPassword(null);
 		}
 		return userModel;
 	}
@@ -118,9 +125,12 @@ public class UserService implements IUserService, UserDetailsService{
 	public UserModel findByEmailAfterLogin(String email) throws SQLException {
 		User userTmp = userDao.findByEmail(email);
 		UserModel userReturn = new UserModel();
+		userReturn.setId(userTmp.getId());
 		userReturn.setEmail(userTmp.getEmail());
 		userReturn.setFullName(userTmp.getFullName());
-		userReturn.setCodeRole(userTmp.getRole().getCode());;
+		userReturn.setUserName(userTmp.getUserName());
+		userReturn.setCodeRole(userTmp.getRole().getCode());
+		userReturn.setActive(userTmp.isActive());
 		return userReturn;
 	}
 
@@ -144,5 +154,7 @@ public class UserService implements IUserService, UserDetailsService{
 				accountNonLocked, grantList);
 		return userDetails;
 	}
+
+	
 
 }

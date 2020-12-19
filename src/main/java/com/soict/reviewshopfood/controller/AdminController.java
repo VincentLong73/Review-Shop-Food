@@ -72,7 +72,7 @@ public class AdminController {
 		return new ResponseEntity<Object>(foodModels,httpStatus);
 	}
 	//dang ki tai khoan chu shop
-	@PostMapping(value="/register",produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+	@PostMapping(value="/register",produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_FORM_URLENCODED_VALUE})
 	public ResponseEntity<Object> addUSer(UserModel userModel){
 		HttpStatus httpStatus = null;
 		try {

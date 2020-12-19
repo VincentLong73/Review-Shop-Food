@@ -15,18 +15,14 @@ import com.nimbusds.jwt.SignedJWT;
 
 @Service
 public class JwtService {
-
-	
 	public static final String EMAIL = "email";
 	public static final String SECRET_KEY = "Laptrinhweb_Team_NguyenVanDung_DaoVietDuc_NguyenVietLong";
 	public static final int EXPIRE_TIME = 68400000;
-	
 	
 	//create token
 	public String generateTokenLogin(String email) {
 		
 		String token = null;
-		
 		try {
 			
 			JWSSigner signer = new MACSigner(generateShareSecret());
@@ -115,7 +111,6 @@ public class JwtService {
 		return sharedSecret;
 		
 	}
-	
 	
 	//kiem tra token con han khong
 	public boolean isTokenExpired(String token) {
