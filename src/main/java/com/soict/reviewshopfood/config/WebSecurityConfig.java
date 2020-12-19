@@ -40,7 +40,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 	public JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter() throws Exception {
 
 		JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter = new JwtAuthenticationTokenFilter();
-		jwtAuthenticationTokenFilter.setAuthenticationManager(authenticationManager());
+		//jwtAuthenticationTokenFilter.setAuthenticationManager(authenticationManager());
 		return jwtAuthenticationTokenFilter;
 
 	}
@@ -68,11 +68,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 		
 //		http.csrf().disable();
 //		http.authorizeRequests().antMatchers("/aims/login","/aims/logout","/aims/editProduct/*","/aims/deleteProduct/*","/users/*").permitAll();
-		httpSecurity.authorizeRequests().antMatchers("/api/home1/**").permitAll();
+		httpSecurity.authorizeRequests().antMatchers("/api/aut/**").permitAll();
 		httpSecurity.csrf().ignoringAntMatchers("/api/**");
 		httpSecurity.antMatcher("/api/**")
 				.httpBasic().authenticationEntryPoint(restAuthenticationEntryPoint()).and()
-				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()		
+				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
+				
+				.antMatchers(HttpMethod.GET,"/api/auth/getUser/**").hasAnyAuthority("ROLE_CUSTOMER","ROLE_BOSSSHOP","ROLE_ADMIN")
+				
 				.antMatchers(HttpMethod.GET,"/api/food/**").permitAll()
 				.antMatchers(HttpMethod.POST,"/api/food/**").access("hasRole('ROLE_CUSTOMER')")
 				.antMatchers(HttpMethod.PUT,"/api/food/**").access("hasRole('ROLE_CUSTOMER')")
