@@ -68,7 +68,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 		
 //		http.csrf().disable();
 //		http.authorizeRequests().antMatchers("/aims/login","/aims/logout","/aims/editProduct/*","/aims/deleteProduct/*","/users/*").permitAll();
-		httpSecurity.authorizeRequests().antMatchers("/api/aut/**").permitAll();
+		httpSecurity.authorizeRequests().antMatchers("/api/auth/**").permitAll();
 		httpSecurity.csrf().ignoringAntMatchers("/api/**");
 		httpSecurity.antMatcher("/api/**")
 				.httpBasic().authenticationEntryPoint(restAuthenticationEntryPoint()).and()
@@ -76,9 +76,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 				
 				.antMatchers(HttpMethod.GET,"/api/auth/getUser/**").hasAnyAuthority("ROLE_CUSTOMER","ROLE_BOSSSHOP","ROLE_ADMIN")
 				
+				.antMatchers(HttpMethod.GET,"/api/image/**").hasAnyAuthority("ROLE_CUSTOMER","ROLE_BOSSSHOP","ROLE_ADMIN")
+				.antMatchers(HttpMethod.POST,"/api/image/uploadImageAvatar/**").hasAnyAuthority("ROLE_CUSTOMER","ROLE_BOSSSHOP","ROLE_ADMIN")
+				.antMatchers(HttpMethod.POST,"/api/image/uploadImageFood/**").access("hasRole('ROLE_BOSSSHOP')")
+				
 				.antMatchers(HttpMethod.GET,"/api/food/**").permitAll()
-				.antMatchers(HttpMethod.POST,"/api/food/**").access("hasRole('ROLE_CUSTOMER')")
-				.antMatchers(HttpMethod.PUT,"/api/food/**").access("hasRole('ROLE_CUSTOMER')")
+				.antMatchers(HttpMethod.POST,"/api/food/**").access("hasRole('ROLE_BOSSSHOP')")
+				.antMatchers(HttpMethod.PUT,"/api/food/**").access("hasRole('ROLE_BOSSSHOP')")
 				.antMatchers(HttpMethod.DELETE,"/api/food/**").access("hasRole('ROLE_BOSSSHOP')")
 				
 				.antMatchers(HttpMethod.GET,"/api/rating/**").permitAll()

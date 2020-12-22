@@ -44,7 +44,7 @@ public class UserService implements IUserService, UserDetailsService{
 			user.setCreatedAt(new Date());
 			user.setActive(true);
 			user.setRole(roleDao.findByCode(user.getRole().getCode()));
-			userDao.saveAndFlush(user);
+			userDao.save(user);
 			return true;
 		}
 		return false;

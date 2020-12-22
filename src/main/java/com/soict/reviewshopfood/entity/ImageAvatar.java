@@ -17,12 +17,13 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="image_food")
-public class ImageFood implements Serializable{
+@Table(name="image_avatar")
+public class ImageAvatar implements Serializable{
 	/**
 	 * 
 	 */
@@ -42,8 +43,8 @@ public class ImageFood implements Serializable{
 	private byte[] data;
 	
 	@OneToOne
-	@JoinColumn(name="food_id")
+	@JoinColumn(name="user_id")
 	@EqualsAndHashCode.Exclude
-    @ToString.Exclude
-	private Food food;
+	@ToString.Exclude
+	private User user;
 }
