@@ -18,5 +18,5 @@ public class ShopModel {
 	private String createdBy;
 	private String modifiedBy;
 	private AddressModel addressModel;
-	private boolean active;
+	private boolean isDelete;
 }

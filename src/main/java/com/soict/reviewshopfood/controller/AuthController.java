@@ -81,11 +81,8 @@ public class AuthController {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
 		if (auth != null) {
-			utils.deleteCookie(request, "Authentication");
-//			Cookie jwt = utils.deleteCookie(request, "Authentication");
-//			Cookie userToken = utils.deleteCookie(request, "userToken");
-//			response.addCookie(jwt);
-//			response.addCookie(userToken);
+			Cookie jwt = utils.createCookie("Authorization", null, true, (long) 0);
+			response.addCookie(jwt);
 			new SecurityContextLogoutHandler().logout(request, response, auth);
 			httpStatus = HttpStatus.OK;
 		}

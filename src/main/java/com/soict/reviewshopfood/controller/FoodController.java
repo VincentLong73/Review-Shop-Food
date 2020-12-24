@@ -17,94 +17,113 @@ import com.soict.reviewshopfood.model.FoodModel;
 import com.soict.reviewshopfood.service.impl.FoodService;
 
 @RestController
-@RequestMapping(value="/api/food")
+@RequestMapping(value = "/api/food")
 public class FoodController {
-	
+
 	@Autowired
 	private FoodService foodService;
-	//lay mon an (ke ca da active = false)
-	@RequestMapping(value="/getFood/{id}")
-	public ResponseEntity<Object> getFood(@PathVariable("id")int id){
+
+	// lay mon an (ke ca da active = false)
+	@RequestMapping(value = "/getFood/{id}")
+	public ResponseEntity<Object> getFood(@PathVariable("id") int id) {
 		HttpStatus httpStatus = null;
 		List<FoodModel> foodModels = new ArrayList<FoodModel>();
 		try {
 			foodModels = foodService.getFoodByShopId(id);
 			httpStatus = HttpStatus.OK;
-		}catch(Exception e) {
+		} catch (Exception e) {
 			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 			System.out.println(e);
 		}
-		return new ResponseEntity<Object>(foodModels, httpStatus);	
+		return new ResponseEntity<Object>(foodModels, httpStatus);
 	}
-	//lay cac mon an con actice
-	@RequestMapping(value="/getFoodAndActive/{id}")
-	public ResponseEntity<Object> getFoodAndActive(@PathVariable("id")int id){
+
+	// lay cac mon an con actice
+	@RequestMapping(value = "/getFoodAndActive/{id}")
+	public ResponseEntity<Object> getFoodAndActive(@PathVariable("id") int id) {
 		HttpStatus httpStatus = null;
 		List<FoodModel> foodModels = new ArrayList<FoodModel>();
 		try {
-			foodModels = foodService.getFoodByShopIdAndActive(id, true);
+			foodModels = foodService.getFoodByShopIdAndActive(id, false);
 			httpStatus = HttpStatus.OK;
-		}catch(Exception e) {
+		} catch (Exception e) {
 			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 			System.out.println(e);
 		}
-		return new ResponseEntity<Object>(foodModels, httpStatus);	
+		return new ResponseEntity<Object>(foodModels, httpStatus);
 	}
-	//lay mon an (ke ca da active = false) theo ten
-	@RequestMapping(value="/getFoodByNameFood/{nameFood}")
-	public ResponseEntity<Object> getFoodByNameFood(@PathVariable("nameFood") String nameFood){
+
+	// lay mon an (ke ca da active = false) theo ten
+	@RequestMapping(value = "/getFoodByNameFood/{nameFood}")
+	public ResponseEntity<Object> getFoodByNameFood(@PathVariable("nameFood") String nameFood) {
 		HttpStatus httpStatus = null;
 		List<FoodModel> foodModels = new ArrayList<FoodModel>();
 		try {
 			foodModels = foodService.getListFoodByNameFood(nameFood);
 			httpStatus = HttpStatus.OK;
-		}catch(Exception e) {
+		} catch (Exception e) {
 			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 			System.out.println(e);
 		}
 		return new ResponseEntity<Object>(foodModels, httpStatus);
 	}
-	//lay cac mon an con actice theo ten
-	@RequestMapping(value="/getListFoodByNameContainingAndActive/{nameFood}")
-	public ResponseEntity<Object> getListFoodByNameContainingAndActive(@PathVariable("nameFood") String nameFood){
+
+	// lay cac mon an con actice theo ten
+	@RequestMapping(value = "/getListFoodByNameContainingAndIsDelete/{nameFood}")
+	public ResponseEntity<Object> getListFoodByNameContainingAndActive(@PathVariable("nameFood") String nameFood) {
 		HttpStatus httpStatus = null;
 		List<FoodModel> foodModels = new ArrayList<FoodModel>();
 		try {
-			foodModels = foodService.getListFoodByNameContainingAndActive(nameFood, true);
+			foodModels = foodService.getListFoodByNameContainingAndActive(nameFood, false);
 			httpStatus = HttpStatus.OK;
-		}catch(Exception e) {
+		} catch (Exception e) {
 			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 			System.out.println(e);
 		}
 		return new ResponseEntity<Object>(foodModels, httpStatus);
 	}
-	
-	@RequestMapping(value="/addFood", method = RequestMethod.POST ,produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-	public ResponseEntity<Object> addFood(FoodModel foodModel){
+
+	// lay cac mon an con actice theo so luong view
+	@RequestMapping(value = "/getFoodByOrderByViewAscAndIsDelete")
+	public ResponseEntity<Object> getFoodByOrderByViewAscAndActive() {
+		HttpStatus httpStatus = null;
+		List<FoodModel> foodModels = new ArrayList<FoodModel>();
+		try {
+			foodModels = foodService.getFoodByView();
+			httpStatus = HttpStatus.OK;
+		} catch (Exception e) {
+			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+			System.out.println(e);
+		}
+		return new ResponseEntity<Object>(foodModels, httpStatus);
+	}
+
+	@RequestMapping(value = "/addFood", method = RequestMethod.POST, produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+	public ResponseEntity<Object> addFood(FoodModel foodModel) {
 		HttpStatus httpStatus = null;
 		try {
 			foodService.addFood(foodModel);
 			httpStatus = HttpStatus.OK;
-		}catch(Exception e) {
+		} catch (Exception e) {
 			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 			System.out.println(e);
 		}
-		
+
 		return new ResponseEntity<Object>(httpStatus);
 	}
-	
-	@PutMapping(value="/editFood" ,produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-	public ResponseEntity<Object> editFood(FoodModel foodModel){
-		
+
+	@PutMapping(value = "/editFood", produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+	public ResponseEntity<Object> editFood(FoodModel foodModel) {
+
 		HttpStatus httpStatus = null;
 		try {
 			foodService.editFood(foodModel);
 			httpStatus = HttpStatus.OK;
-		}catch(Exception e) {
+		} catch (Exception e) {
 			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 			System.out.println(e);
 		}
-		
+
 		return new ResponseEntity<Object>(httpStatus);
 	}
 

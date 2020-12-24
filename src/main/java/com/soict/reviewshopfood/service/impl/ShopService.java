@@ -68,10 +68,10 @@ public class ShopService implements IShopService {
 		if (shopDao.getOne(id) != null) {
 			int addressId = shopDao.getOne(id).getAddress().getId();
 			Shop shop = shopDao.getOne(id);
-			shop.setActive(false);
+			shop.setDelete(true);
 			shopDao.saveAndFlush(shop);
 			Address address = addressDao.getOne(addressId);
-			address.setActive(false);
+			address.setDelete(false);
 			addressDao.saveAndFlush(address);
 		}
 

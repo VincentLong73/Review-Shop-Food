@@ -34,13 +34,16 @@ public class Address implements Serializable{/**
 	@Column(name="district")
 	private String district;
 	
+	@Column(name="province")
+	private String province;
+	
 	@Column(name="village")
 	private String village;
 	
 	@Column(name="street")
 	private String street;
 	
-	@Column(name="active")
-	private boolean active;
+	@Column(name="is_delete")
+	private boolean isDelete;
 
 }

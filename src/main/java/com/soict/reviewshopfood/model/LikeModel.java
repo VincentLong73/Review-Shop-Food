@@ -7,12 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AddressModel {
+public class LikeModel {
 	private int id;
-	private String country;
-	private String district;
-	private String village;
-	private String street;
-	private boolean isDelete;
+	private int userId;
+	private int commentId;
 
 }
