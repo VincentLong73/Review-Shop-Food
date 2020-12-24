@@ -1,6 +1,7 @@
 package com.soict.reviewshopfood.model;
 
 import java.util.Date;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,4 +18,6 @@ public class CommentModel {
 	private int foodId;
 	private Date createdAt;
 	private int commentParentId;
+	private int countLike;
+	private List<LikeModel> listLike;
 }

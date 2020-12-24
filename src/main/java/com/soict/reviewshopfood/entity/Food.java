@@ -55,8 +55,8 @@ public class Food implements Serializable{
 	@Column(name="created_by")
 	private String createdBy;
 	
-	@Column(name="active")
-	private boolean active;
+	@Column(name="is_delete")
+	private boolean isDelete;
 	
 	@OneToMany(mappedBy = "food", cascade = CascadeType.ALL )
 	@EqualsAndHashCode.Exclude

@@ -21,5 +21,5 @@ public class FoodModel {
 	private Date createdAt;
 	private String createdBy;
 	private int shopId;
-	private boolean active;
+	private boolean isDelete;
 }
