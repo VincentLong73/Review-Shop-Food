@@ -8,7 +8,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -37,10 +36,7 @@ public class ImageFood implements Serializable{
 	
 	@Column(name="file_type")
 	private String fileType;
-	
-	@Lob
-	private byte[] data;
-	
+
 	@OneToOne
 	@JoinColumn(name="food_id")
 	@EqualsAndHashCode.Exclude

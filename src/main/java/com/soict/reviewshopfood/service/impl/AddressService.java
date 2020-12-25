@@ -45,16 +45,16 @@ public class AddressService implements IAddressService {
 
 	@Override
 	public void editAddress(AddressModel addressModel) {
-		
-		Address address = addressDao.getOne(addressModel.getId());
-		
-		address.setCountry(addressModel.getCountry());
-		address.setDistrict(addressModel.getDistrict());
-		address.setVillage(addressModel.getVillage());
-		address.setStreet(addressModel.getStreet());
-		
-		addressDao.save(address);
-		
+		if(addressDao.existsById(addressModel.getId())) {
+			Address address = addressDao.getOne(addressModel.getId());
+			
+			address.setCountry(addressModel.getCountry());
+			address.setDistrict(addressModel.getDistrict());
+			address.setVillage(addressModel.getVillage());
+			address.setStreet(addressModel.getStreet());
+			
+			addressDao.saveAndFlush(address);
+		}
 	}
 
 }

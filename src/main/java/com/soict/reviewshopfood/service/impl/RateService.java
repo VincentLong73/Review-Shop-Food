@@ -23,10 +23,12 @@ public class RateService implements IRateService{
 
 	@Override
 	public void addRate(RateModel rateModel) {//them diem rate vao tung mon an
-		Rate rate = new Rate();
-		rate.setFood(foodDao.getOne(rateModel.getFoodId()));
-		rate.setMarkRate(rateModel.getMarkRate());
-		rateDao.save(rate);
+		if(rateModel != null) {
+			Rate rate = new Rate();
+			rate.setFood(foodDao.getOne(rateModel.getFoodId()));
+			rate.setMarkRate(rateModel.getMarkRate());
+			rateDao.save(rate);
+		}
 	}
 
 	@Override

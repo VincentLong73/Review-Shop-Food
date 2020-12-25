@@ -30,40 +30,42 @@ public class CommentService implements ICommentService{
 
 	@Override
 	public void addComment(CommentModel commentModel) {
-		
-		Comment comment = new Comment();
-		
-		comment.setContent(commentModel.getContent());
-		comment.setCreatedAt(new Date());
-		comment.setUser(userDao.getOne(commentModel.getUserId()));
-		comment.setFood(foodDao.getOne(commentModel.getFoodId()));
-		if(commentModel.getCommentParentId()!=0) {
-			comment.setComment(commentDao.getOne(commentModel.getCommentParentId()));
+		if(commentModel != null && foodDao.existsById(commentModel.getFoodId())) {
+			Comment comment = new Comment();
+			
+			comment.setContent(commentModel.getContent());
+			comment.setCreatedAt(new Date());
+			comment.setUser(userDao.getOne(commentModel.getUserId()));
+			comment.setFood(foodDao.getOne(commentModel.getFoodId()));
+			if(commentModel.getCommentParentId()!=0) {
+				comment.setComment(commentDao.getOne(commentModel.getCommentParentId()));
+			}
+			commentDao.save(comment);
 		}
-		commentDao.save(comment);
 	}
 
 	@Override
 	public List<CommentModel> getListCommentbyIdFood(int foodId) {
-		
-		List<Comment> comments = commentDao.getListCommentByFoodId(foodId);
 		List<CommentModel> commentModels = new ArrayList<>();
-		
-		for(Comment comment : comments) {
-			CommentModel commentModel = new CommentModel();
-			List<LikeModel> listLike = likeService.getLike(comment.getId());
-			commentModel.setCountLike(listLike.size());
-			commentModel.setListLike(listLike);
-			commentModel.setId(comment.getId());
-			commentModel.setContent(comment.getContent());
-			commentModel.setCreatedAt(comment.getCreatedAt());
-			commentModel.setUserId(comment.getUser().getId());
-			commentModel.setFoodId(comment.getFood().getId());
+		if(foodDao.existsById(foodId)) {
+			List<Comment> comments = commentDao.getListCommentByFoodId(foodId);
 			
-			if(comment.getComment() != null) {	
-				commentModel.setCommentParentId(comment.getComment().getId());
+			for(Comment comment : comments) {
+				CommentModel commentModel = new CommentModel();
+				List<LikeModel> listLike = likeService.getLike(comment.getId());
+				commentModel.setCountLike(listLike.size());
+				commentModel.setListLike(listLike);
+				commentModel.setId(comment.getId());
+				commentModel.setContent(comment.getContent());
+				commentModel.setCreatedAt(comment.getCreatedAt());
+				commentModel.setUserId(comment.getUser().getId());
+				commentModel.setFoodId(comment.getFood().getId());
+				
+				if(comment.getComment() != null) {	
+					commentModel.setCommentParentId(comment.getComment().getId());
+				}
+				commentModels.add(commentModel);
 			}
-			commentModels.add(commentModel);
 		}
 		
 		return commentModels;
