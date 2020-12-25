@@ -1,10 +1,18 @@
 package com.soict.reviewshopfood.service.impl;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,7 +21,8 @@ import com.soict.reviewshopfood.dao.IFoodDAO;
 import com.soict.reviewshopfood.dao.IImageFoodDAO;
 import com.soict.reviewshopfood.entity.ImageFood;
 import com.soict.reviewshopfood.exception.FileStorageException;
-import com.soict.reviewshopfood.model.ImageFoodModel;
+import com.soict.reviewshopfood.exception.MyFileNotFoundException;
+import com.soict.reviewshopfood.properties.FileStorageProperties;
 import com.soict.reviewshopfood.service.IImageFoodService;
 
 @Service
@@ -22,6 +31,19 @@ public class ImageFoodService implements IImageFoodService{
 	private IImageFoodDAO imageFoodDao;
 	@Autowired
 	private IFoodDAO foodDao;
+	
+	private final Path fileStorageLocation;
+
+    @Autowired
+    public ImageFoodService(FileStorageProperties fileStorageProperties) {
+        this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir())
+                .toAbsolutePath().normalize();
+        try {
+            Files.createDirectories(this.fileStorageLocation);
+        } catch (Exception ex) {
+            throw new FileStorageException("Could not create the directory where the uploaded files will be stored.", ex);
+        }
+    }
 	@Override
 	public void storeFileImageFood(MultipartFile[] files,int foodId) {
 		
@@ -31,10 +53,11 @@ public class ImageFoodService implements IImageFoodService{
 				if (fileName.contains("..")) {
 					throw new FileStorageException("Sorry! Filenamecontains invalid path sequence" + fileName);
 				}
+				Path targetLocation = this.fileStorageLocation.resolve(fileName);
+				Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 				ImageFood image = new ImageFood();
 				image.setFileName(fileName);
 				image.setFileType(file.getContentType());
-				image.setData(file.getBytes());
 				image.setFood(foodDao.getOne(foodId));
 				imageFoodDao.save(image);
 			} catch (IOException e) {
@@ -44,20 +67,29 @@ public class ImageFoodService implements IImageFoodService{
 	}
 
 	@Override
-	public List<ImageFoodModel> getImageFood(int foodId) {
-		List<ImageFoodModel> listImageFoodModel = new ArrayList<ImageFoodModel>();
-		List<ImageFood> listImageFood = imageFoodDao.findByFoodId(foodId);
-		for(ImageFood imageFood : listImageFood) {
-			ImageFoodModel imageFoodModel = new ImageFoodModel();
-			imageFoodModel.setFileName(imageFood.getFileName());
-			imageFoodModel.setFileType(imageFood.getFileType());
-			imageFoodModel.setId(imageFood.getId());
-			imageFoodModel.setData(imageFood.getData());
-			imageFoodModel.setFoodId(imageFood.getFood().getId());
-			listImageFoodModel.add(imageFoodModel);
+	public Resource getImageFood(int imageId) {
+		try {
+			ImageFood image = imageFoodDao.getOne(imageId);
+			Path filePath = this.fileStorageLocation.resolve(image.getFileName()).normalize();
+			Resource resource = new UrlResource(filePath.toUri());
+			if(resource.exists()) {
+				return resource;
+			}else {
+				throw new MyFileNotFoundException("File not found avatar !");
+			}
+			
+		}catch(MalformedURLException e) {
+			throw new MyFileNotFoundException("File not found avatar !");
 		}
-		
-		return listImageFoodModel;
+	}
+	@Override
+	public List<Integer> getListIdImageFood(int foodId) throws SQLException {
+		List<Integer> listImageFoodId = new ArrayList<Integer>();
+		List<ImageFood> listImageFood = imageFoodDao.findByFoodId(foodId);
+		for(ImageFood image : listImageFood) {
+			listImageFoodId.add(image.getId());
+		}
+		return listImageFoodId;
 	}
 
 }

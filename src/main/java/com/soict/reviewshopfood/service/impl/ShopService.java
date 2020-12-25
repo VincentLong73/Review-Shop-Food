@@ -46,32 +46,35 @@ public class ShopService implements IShopService {
 	@Override
 	public void addShop(ShopModel shopModel) {
 		Shop shop = modelMapper.map(shopModel, Shop.class);
+		shop.setDelete(false);
 		addressService.addAddress(shopModel.getAddressModel());
 		AddressModel addressModel = shopModel.getAddressModel();
+		addressModel.setDelete(false);
 		shop.setAddress(addressDao.findByDistrictAndVillageAndStreet(addressModel.getDistrict(), addressModel.getVillage(),addressModel.getStreet()));
-		shopDao.saveAndFlush(shop);
+		shopDao.save(shop);
 	}
 
 	@Override
 	public void editShop(ShopModel shopModel) {
-		Shop shop = shopDao.getOne(shopModel.getId());
-		shop = modelMapper.map(shopModel, Shop.class);
-		addressService.editAddress(shopModel.getAddressModel());
-		shop.setAddress(addressDao.getOne(shopModel.getAddressModel().getId()));
-		shopDao.save(shop);
-
+		if(shopDao.existsById(shopModel.getId())) {
+			Shop shop = shopDao.getOne(shopModel.getId());
+			shop = modelMapper.map(shopModel, Shop.class);
+			addressService.editAddress(shopModel.getAddressModel());
+			shop.setAddress(addressDao.getOne(shopModel.getAddressModel().getId()));
+			shopDao.saveAndFlush(shop);
+		}
 	}
 
 	@Override
 	public void deleteShop(int id) {
 
-		if (shopDao.getOne(id) != null) {
+		if (shopDao.existsById(id)) {
 			int addressId = shopDao.getOne(id).getAddress().getId();
 			Shop shop = shopDao.getOne(id);
 			shop.setDelete(true);
 			shopDao.saveAndFlush(shop);
 			Address address = addressDao.getOne(addressId);
-			address.setDelete(false);
+			address.setDelete(true);
 			addressDao.saveAndFlush(address);
 		}
 

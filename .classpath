@@ -35,5 +35,6 @@
 	<classpathentry kind="lib" path="E:/javaweb/jar_files/spring-context-support-5.3.1.jar"/>
 	<classpathentry kind="lib" path="E:/javaweb/jar_files/modelmapper-1.1.0.jar"/>
 	<classpathentry kind="lib" path="E:/javaweb/jar_files/javax.mail-1.6.1.jar"/>
+	<classpathentry kind="lib" path="E:/javaweb/jar_files/spring-boot-configuration-processor-2.4.1.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

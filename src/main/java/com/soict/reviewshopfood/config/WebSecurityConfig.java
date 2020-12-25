@@ -74,16 +74,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 				.httpBasic().authenticationEntryPoint(restAuthenticationEntryPoint()).and()
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
 				
-				.antMatchers(HttpMethod.GET,"/api/auth/getUser/**").hasAnyAuthority("ROLE_CUSTOMER","ROLE_BOSSSHOP","ROLE_ADMIN")
+				.antMatchers("/api/user/**").hasAnyAuthority("ROLE_CUSTOMER","ROLE_SHOP","ROLE_ADMIN")
 				
-				.antMatchers(HttpMethod.GET,"/api/image/**").hasAnyAuthority("ROLE_CUSTOMER","ROLE_BOSSSHOP","ROLE_ADMIN")
-				.antMatchers(HttpMethod.POST,"/api/image/uploadImageAvatar/**").hasAnyAuthority("ROLE_CUSTOMER","ROLE_BOSSSHOP","ROLE_ADMIN")
-				.antMatchers(HttpMethod.POST,"/api/image/uploadImageFood/**").access("hasRole('ROLE_BOSSSHOP')")
+				.antMatchers(HttpMethod.GET,"/api/image/**").hasAnyAuthority("ROLE_CUSTOMER","ROLE_SHOP","ROLE_ADMIN")
+				.antMatchers(HttpMethod.POST,"/api/image/uploadImageAvatar/**").hasAnyAuthority("ROLE_CUSTOMER","ROLE_SHOP","ROLE_ADMIN")
+				.antMatchers(HttpMethod.POST,"/api/image/uploadImageFood/**").access("hasRole('ROLE_SHOP')")
 				
 				.antMatchers(HttpMethod.GET,"/api/food/**").permitAll()
-				.antMatchers(HttpMethod.POST,"/api/food/**").access("hasRole('ROLE_BOSSSHOP')")
-				.antMatchers(HttpMethod.PUT,"/api/food/**").access("hasRole('ROLE_BOSSSHOP')")
-				.antMatchers(HttpMethod.DELETE,"/api/food/**").access("hasRole('ROLE_BOSSSHOP')")
+				.antMatchers(HttpMethod.POST,"/api/food/**").access("hasRole('ROLE_SHOP')")
+				.antMatchers(HttpMethod.PUT,"/api/food/**").access("hasRole('ROLE_SHOP')")
+				.antMatchers(HttpMethod.DELETE,"/api/food/**").access("hasRole('ROLE_SHOP')")
 				
 				.antMatchers(HttpMethod.GET,"/api/rating/**").permitAll()
 				
@@ -92,14 +92,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 				.antMatchers(HttpMethod.PUT,"/api/comment/**").access("hasRole('ROLE_CUSTOMER')")
 				
 				.antMatchers(HttpMethod.GET,"/api/shop/**").permitAll()
-				.antMatchers(HttpMethod.POST,"/api/shop/**").access("hasRole('ROLE_BOSSSHOP')")
-				.antMatchers(HttpMethod.PUT,"/api/shop/**").access("hasRole('ROLE_BOSSSHOP')")
+				.antMatchers(HttpMethod.POST,"/api/shop/**").access("hasRole('ROLE_SHOP')")
+				.antMatchers(HttpMethod.PUT,"/api/shop/**").access("hasRole('ROLE_SHOP')")
 				.antMatchers(HttpMethod.DELETE,"/api/shop/**").access("hasRole('ROLE_ADMIN')")
 				
-				.antMatchers(HttpMethod.GET,"/api/admin/**").access("hasRole('ROLE_ADMIN')")
-				.antMatchers(HttpMethod.POST,"/api/admin/**").access("hasRole('ROLE_ADMIN')")
-				.antMatchers(HttpMethod.PUT,"/api/admin/**").access("hasRole('ROLE_ADMIN')")
-				.antMatchers(HttpMethod.DELETE,"/api/admin/**").access("hasRole('ROLE_ADMIN')")
+				
+				.antMatchers("/api/admin/**").access("hasRole('ROLE_ADMIN')")
+//				.antMatchers(HttpMethod.GET,"/api/admin/**").access("hasRole('ROLE_ADMIN')")
+//				.antMatchers(HttpMethod.POST,"/api/admin/**").access("hasRole('ROLE_ADMIN')")
+//				.antMatchers(HttpMethod.PUT,"/api/admin/**").access("hasRole('ROLE_ADMIN')")
+//				.antMatchers(HttpMethod.DELETE,"/api/admin/**").access("hasRole('ROLE_ADMIN')")
 				
 				
 				.and()

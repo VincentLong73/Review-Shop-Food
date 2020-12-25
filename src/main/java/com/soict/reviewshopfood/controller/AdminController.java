@@ -78,7 +78,7 @@ public class AdminController {
 	public ResponseEntity<Object> addUSer(UserModel userModel){
 		HttpStatus httpStatus = null;
 		try {
-			userModel.setCodeRole("ROLE_BOSSSHOP");
+			userModel.setCodeRole("ROLE_SHOP");
 			userService.addUser(userModel);
 			httpStatus = HttpStatus.OK;
 		}catch(Exception e) {
