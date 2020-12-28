@@ -9,8 +9,6 @@ import java.util.List;
 import org.apache.commons.lang.RandomStringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,9 +32,6 @@ public class UserService implements IUserService, UserDetailsService{
 	private IUserDAO userDao;
 	@Autowired
 	private IRoleDAO roleDao;
-	@Autowired
-	private JavaMailSender emailSender;
-
 	@Override
 	public boolean addUser(UserModel userModel) {
 		User user = modelMapper.map(userModel, User.class);
@@ -77,13 +72,6 @@ public class UserService implements IUserService, UserDetailsService{
 		if (userUpdate != null) {
 			userUpdate.setPassword(passRandom);
 			userDao.save(userUpdate);
-
-			SimpleMailMessage message = new SimpleMailMessage();
-			message.setTo(userUpdate.getEmail());
-			message.setSubject("Change Password");
-			message.setText("Hello, We are Aims!\n Your new password is : " + passRandom);
-			// Send Message!
-			this.emailSender.send(message);
 		}
 		
 	}
