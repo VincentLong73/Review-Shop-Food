@@ -2,6 +2,9 @@ package com.soict.reviewshopfood.model;
 
 import java.util.Date;
 
+import org.springframework.core.io.Resource;
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,4 +23,7 @@ public class UserModel {
 	private Date modifiedDate;
 	private String codeRole;
 	private int imageAvatarId;
+	private String avatarUrl;
+	private MultipartFile file;
+	private Resource resource;
 }

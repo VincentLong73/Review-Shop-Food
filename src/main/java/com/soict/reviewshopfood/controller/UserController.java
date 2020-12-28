@@ -2,10 +2,12 @@ package com.soict.reviewshopfood.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,6 +36,26 @@ public class UserController {
 		}
 		return new ResponseEntity<Object>(userModel,httpStatus);
 	}
+	
+	@PutMapping(value="/editUser",produces = { MediaType.APPLICATION_JSON_VALUE,
+			MediaType.APPLICATION_FORM_URLENCODED_VALUE , MediaType.MULTIPART_FORM_DATA_VALUE})
+	public ResponseEntity<String> editUser(UserModel userModel){
+		HttpStatus httpStatus = null;
+		try {
+			if(userService.editUser(userModel)) {
+				httpStatus = HttpStatus.OK;
+			}else {
+				httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+			}
+			
+		}catch(Exception e) {
+			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+			System.out.println(e);
+		}
+		return new ResponseEntity<String>(httpStatus);
+	}
+	
+	
 	
 //	@Autowired
 //	private UserService userService;

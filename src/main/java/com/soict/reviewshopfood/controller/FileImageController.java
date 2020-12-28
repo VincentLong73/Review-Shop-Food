@@ -38,21 +38,7 @@ public class FileImageController {
 	private ImageAvatarService iImageAvatarService;
 	@Autowired
 	private ImageFoodService imageFoodService;
-	
-	@PostMapping("/uploadImageAvatar/{userId}")
-	public ResponseEntity<Object> uploadFile(@RequestParam("file") MultipartFile file,@PathVariable("userId") int userId) {
-		HttpStatus httpStatus = null;
-		try {
-			iImageAvatarService.storeFileImageAvatar(file,userId);
-			httpStatus = HttpStatus.OK;
-		}catch(Exception e) {
-			System.out.println(e);
-			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-		}
-		
-		return new ResponseEntity<Object>(httpStatus);
-	}
-	
+
 	@PostMapping("/uploadImageFood/{foodId}")
 	public ResponseEntity<Object> uploadMultiFiles(@RequestParam("files") MultipartFile files[],@PathVariable("foodId") int foodId){
 		HttpStatus httpStatus = null;
@@ -63,7 +49,6 @@ public class FileImageController {
 			System.out.println(e);
 			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 		}
-		
 		return new ResponseEntity<Object>(httpStatus);
 	}
 	
@@ -71,7 +56,6 @@ public class FileImageController {
 	public ResponseEntity<Resource> getImageAvatar(@PathVariable("userId") int userId,HttpServletRequest request){	
 		//HttpStatus httpStatus = null;
 		Resource resource = null;
-		
 		try {
 			resource = iImageAvatarService.getImageAvatar(userId);
 			//httpStatus = HttpStatus.OK;
@@ -128,7 +112,4 @@ public class FileImageController {
 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=\""+resource.getFilename()+"\"")
 				.body(resource);	
 	}
-	
-	
-
 }
