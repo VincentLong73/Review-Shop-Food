@@ -48,6 +48,9 @@ public class User implements Serializable{/**
 	@Column(name="fullname")
 	private String fullName;
 	
+	@Column(name="image_url")
+	private String imageUrl;
+	
 	@Column(name="email")
 	private String email;
 	

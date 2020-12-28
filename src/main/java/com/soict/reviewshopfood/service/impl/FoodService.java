@@ -131,6 +131,7 @@ public class FoodService implements IFoodService {
 			foodModel.setCreatedAt(food.getCreatedAt());
 			foodModel.setDelete(food.isDelete());
 			foodModel.setCreatedBy(food.getCreatedBy());
+			foodModel.setView(food.getView());
 			foodModel.setShopId(food.getShop().getId());
 			
 			foodModels.add(foodModel);
@@ -145,5 +146,27 @@ public class FoodService implements IFoodService {
 //		}
 //		return listImageFoodId;
 //	}
+
+	@Override
+	public FoodModel getFoodByIdAndActive(int id) throws SQLException {
+		
+		if(foodDao.getFoodByIdAndIsDelete(id, false) != null) {
+			Food food = foodDao.getFoodByIdAndIsDelete(id, false);
+			FoodModel foodModel = new FoodModel();
+			
+			foodModel.setId(food.getId());
+			foodModel.setName(food.getName());
+			foodModel.setContent(food.getContent());
+			foodModel.setPrice(food.getPrice());
+			foodModel.setCreatedAt(food.getCreatedAt());
+			foodModel.setDelete(food.isDelete());
+			foodModel.setCreatedBy(food.getCreatedBy());
+			foodModel.setView(food.getView());
+			foodModel.setShopId(food.getShop().getId());
+			return foodModel;
+		}
+		return null;
+		
+	}
 
 }

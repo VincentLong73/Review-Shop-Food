@@ -1,5 +1,10 @@
 package com.soict.reviewshopfood.service.impl;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,11 +18,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.soict.reviewshopfood.dao.IRoleDAO;
 import com.soict.reviewshopfood.dao.IUserDAO;
 import com.soict.reviewshopfood.entity.User;
+import com.soict.reviewshopfood.exception.FileStorageException;
 import com.soict.reviewshopfood.model.UserModel;
+import com.soict.reviewshopfood.properties.FileStorageProperties;
 import com.soict.reviewshopfood.service.IUserService;
 
 @Service
@@ -29,6 +37,20 @@ public class UserService implements IUserService, UserDetailsService {
 	private IUserDAO userDao;
 	@Autowired
 	private IRoleDAO roleDao;
+	
+	private final Path fileStorageLocation;
+	
+	@Autowired
+	public UserService(FileStorageProperties fileStorageProperties) {
+		this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir()).toAbsolutePath().normalize();
+
+		try {
+			Files.createDirectories(this.fileStorageLocation);
+		} catch (Exception ex) {
+			throw new FileStorageException("Could not create the directory where the uploaded files will be stored.",
+					ex);
+		}
+	}
 //	@Autowired
 //	private JavaMailSender emailSender;
 
@@ -106,7 +128,9 @@ public class UserService implements IUserService, UserDetailsService {
 		if (userDao.existsById(id)) {
 			User user = userDao.getOne(id);
 			userModel = modelMapper.map(user, UserModel.class);
+			userModel.setAvatarUrl(user.getImageUrl());
 			userModel.setPassword(null);
+			
 		}
 		return userModel;
 	}
@@ -156,6 +180,30 @@ public class UserService implements IUserService, UserDetailsService {
 		UserDetails userDetails = (UserDetails) new org.springframework.security.core.userdetails.User(user.getEmail(),
 				user.getPassword(), enable, accountNonExpired, credentialsNonExpired, accountNonLocked, grantList);
 		return userDetails;
+	}
+
+	@Override
+	public boolean editUser(UserModel userModel) throws SQLException {
+		if(userDao.existsById(userModel.getId())) {
+			User user = modelMapper.map(userModel, User.class);
+			user.setModifiedDate(new Date());
+			user.setRole(roleDao.findByCode(userModel.getCodeRole()));
+			String fileName = StringUtils.cleanPath(userModel.getFile().getOriginalFilename());
+			try {
+				if (fileName.contains("..")) {
+					throw new FileStorageException("Sorry! Filenamecontains invalid path sequence" + fileName);
+				}
+				Path targetLocation = this.fileStorageLocation.resolve(fileName);
+				Files.copy(userModel.getFile().getInputStream(), targetLocation,StandardCopyOption.REPLACE_EXISTING);
+				
+				user.setImageUrl(fileName);
+			} catch (IOException e) {
+				throw new FileStorageException("Could not store file " + fileName + ". Please try again!", e);
+			}
+			userDao.saveAndFlush(user);
+			return true;
+		}	
+		return false;
 	}
 
 }
