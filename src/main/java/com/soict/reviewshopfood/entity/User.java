@@ -60,9 +60,12 @@ public class User implements Serializable{/**
 	@Column(name="created_at")
 	private Date createdAt;
 	
+	@Column(name="modified_date")
+	private Date modifiedDate;
+	@Column(name="avatar_url")
+	private String avatarUrl;
 	@Column(name="created_by")
 	private String createdBy;
-	
 	
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 	@EqualsAndHashCode.Exclude
