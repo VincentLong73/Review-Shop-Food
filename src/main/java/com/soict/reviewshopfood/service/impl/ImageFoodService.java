@@ -56,8 +56,7 @@ public class ImageFoodService implements IImageFoodService{
 				Path targetLocation = this.fileStorageLocation.resolve(fileName);
 				Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 				ImageFood image = new ImageFood();
-				image.setFileName(fileName);
-				image.setFileType(file.getContentType());
+				image.setImageUrl(fileName);
 				image.setFood(foodDao.getOne(foodId));
 				imageFoodDao.save(image);
 			} catch (IOException e) {
@@ -70,7 +69,7 @@ public class ImageFoodService implements IImageFoodService{
 	public Resource getImageFood(int imageId) {
 		try {
 			ImageFood image = imageFoodDao.getOne(imageId);
-			Path filePath = this.fileStorageLocation.resolve(image.getFileName()).normalize();
+			Path filePath = this.fileStorageLocation.resolve(image.getImageUrl()).normalize();
 			Resource resource = new UrlResource(filePath.toUri());
 			if(resource.exists()) {
 				return resource;

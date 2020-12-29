@@ -121,6 +121,7 @@ public class FoodController {
 		return new ResponseEntity<Object>(httpStatus);
 	}
 
+	//Sua thong tin food
 	@PutMapping(value = "/editFood", produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 	public ResponseEntity<Object> editFood(FoodModel foodModel) {
 

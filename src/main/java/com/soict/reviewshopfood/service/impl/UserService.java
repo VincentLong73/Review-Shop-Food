@@ -136,10 +136,10 @@ public class UserService implements IUserService, UserDetailsService {
 	}
 
 	@Override
-	public void blockUser(int id) throws SQLException {
+	public void blockOrUnblockUser(int id, boolean active) throws SQLException {
 		if(userDao.existsById(id)) {
 			User user = userDao.getOne(id);
-			user.setActive(false);
+			user.setActive(active);
 			userDao.saveAndFlush(user);
 		}
 	}
@@ -186,7 +186,6 @@ public class UserService implements IUserService, UserDetailsService {
 	public boolean editUser(UserModel userModel) throws SQLException {
 		if(userDao.existsById(userModel.getId())) {
 			User user = modelMapper.map(userModel, User.class);
-			user.setModifiedDate(new Date());
 			user.setRole(roleDao.findByCode(userModel.getCodeRole()));
 			String fileName = StringUtils.cleanPath(userModel.getFile().getOriginalFilename());
 			try {

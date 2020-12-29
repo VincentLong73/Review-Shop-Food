@@ -2,7 +2,6 @@ package com.soict.reviewshopfood.model;
 
 import java.util.Date;
 
-import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.AllArgsConstructor;
@@ -20,10 +19,9 @@ public class UserModel {
 	private String email;
 	private boolean active;
 	private Date createdAt;
-	private Date modifiedDate;
+	private String createdBy;
 	private String codeRole;
 	private int imageAvatarId;
 	private String avatarUrl;
 	private MultipartFile file;
-	private Resource resource;
 }

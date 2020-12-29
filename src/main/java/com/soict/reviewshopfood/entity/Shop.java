@@ -9,12 +9,15 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Data
@@ -33,20 +36,20 @@ public class Shop implements Serializable {/**
 	@Column(name="name_shop")
 	private String nameShop;
 	
-	@Column(name="image")
-	private String image;
+	@Column(name="description")
+	private String description;
+	
+	@Column(name="image_url")
+	private String imageUrl;
 	
 	@Column(name="created_at")
 	private Date createdAt;
 	
-	@Column(name="modified_at")
-	private Date modifiedAt;
-	
 	@Column(name="created_by")
 	private String createdBy;
 	
-	@Column(name="modified_by")
-	private String modifiedBy;
+	@Column(name="update_date")
+	private Date updateDate;
 	
 	@OneToOne
 	@JoinColumn(name="address_id")
@@ -54,5 +57,11 @@ public class Shop implements Serializable {/**
 	
 	@Column(name="is_delete")
 	private boolean isDelete;
+	
+	@ManyToOne
+	@JoinColumn(name="user_id")
+	@EqualsAndHashCode.Exclude
+	@ToString.Exclude
+	private User user;
 
 }
