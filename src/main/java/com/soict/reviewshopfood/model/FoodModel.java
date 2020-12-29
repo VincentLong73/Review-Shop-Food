@@ -15,6 +15,7 @@ public class FoodModel {
 	private String name;
 	private List<Integer> imageFoodIds;
 	private List<Integer> markRates;
+	private double rating;
 	private String content;
 	private float price;
 	private int view;

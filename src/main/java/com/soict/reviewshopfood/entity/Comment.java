@@ -38,6 +38,9 @@ public class Comment implements Serializable{/**
 	
 	@Column(name="created_at")
 	private Date createdAt;
+	
+	@Column(name="rate")
+	private int rate;
 
 
 	@ManyToOne

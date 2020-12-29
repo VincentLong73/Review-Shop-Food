@@ -85,8 +85,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 				.antMatchers(HttpMethod.PUT,"/api/food/**").access("hasRole('ROLE_SHOP')")
 				.antMatchers(HttpMethod.DELETE,"/api/food/**").access("hasRole('ROLE_SHOP')")
 				
-				.antMatchers(HttpMethod.GET,"/api/rating/**").permitAll()
-				
 				.antMatchers(HttpMethod.GET,"/api/comment/**").permitAll()
 				.antMatchers(HttpMethod.POST,"/api/comment/**").access("hasRole('ROLE_CUSTOMER')")
 				.antMatchers(HttpMethod.PUT,"/api/comment/**").access("hasRole('ROLE_CUSTOMER')")

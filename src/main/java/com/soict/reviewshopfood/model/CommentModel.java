@@ -19,5 +19,6 @@ public class CommentModel {
 	private Date createdAt;
 	private int commentParentId;
 	private int countLike;
+	private int rate;
 	private List<LikeModel> listLike;
 }

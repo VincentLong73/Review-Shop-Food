@@ -31,11 +31,8 @@ public class ImageFood implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
-	@Column(name="file_name")
-	private String fileName;
-	
-	@Column(name="file_type")
-	private String fileType;
+	@Column(name="image_url")
+	private String imageUrl;
 
 	@OneToOne
 	@JoinColumn(name="food_id")

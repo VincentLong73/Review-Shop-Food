@@ -60,14 +60,19 @@ public class User implements Serializable{/**
 	@Column(name="created_at")
 	private Date createdAt;
 	
-	@Column(name="modified_date")
-	private Date modifiedDate;
+	@Column(name="created_by")
+	private String createdBy;
 	
 	
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 	@EqualsAndHashCode.Exclude
     @ToString.Exclude
 	private List<Comment> comments = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	@EqualsAndHashCode.Exclude
+    @ToString.Exclude
+	private List<Shop> shops = new ArrayList<>();
 	
 	@ManyToOne
 	@JoinColumn(name="role_id")
@@ -78,7 +83,7 @@ public class User implements Serializable{/**
 	public List<GrantedAuthority> getAuthorities() {
 
 		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-		authorities.add(new SimpleGrantedAuthority(this.role.getRoleName()));
+		authorities.add(new SimpleGrantedAuthority(this.role.getCode()));
 
 		return authorities;
 	}

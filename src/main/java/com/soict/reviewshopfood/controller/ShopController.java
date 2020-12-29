@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,7 +28,7 @@ public class ShopController {
 	@Autowired
 	private ShopService shopService;
 	
-	@RequestMapping(value="/getShop/{id}")
+	@GetMapping(value="/getShop/{id}")
 	public ResponseEntity<Object> getShopById(@PathVariable("id") int id){
 		HttpStatus httpStatus = null;
 		ShopModel shopModel = null;
@@ -41,7 +42,7 @@ public class ShopController {
 		return new ResponseEntity<Object>(shopModel, httpStatus);
 	}
 	
-	@RequestMapping(value="/getShopByNameShop/{nameShop}")
+	@GetMapping(value="/getShopByNameShop/{nameShop}")
 	public ResponseEntity<Object> getShopByNameShop(@PathVariable("nameShop") String nameShop){
 		HttpStatus httpStatus = null;
 		List<ShopModel> shopModels = new ArrayList<ShopModel>();
