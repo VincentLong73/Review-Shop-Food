@@ -12,7 +12,6 @@ import com.soict.reviewshopfood.dao.IFoodDAO;
 import com.soict.reviewshopfood.dao.IShopDAO;
 import com.soict.reviewshopfood.entity.Food;
 import com.soict.reviewshopfood.model.FoodModel;
-import com.soict.reviewshopfood.model.ImageFoodModel;
 import com.soict.reviewshopfood.service.IFoodService;
 
 @Service
@@ -22,55 +21,66 @@ public class FoodService implements IFoodService {
 	private IFoodDAO foodDao;
 	@Autowired
 	private IShopDAO shopDao;
-	@Autowired
-	private ImageFoodService imageFoodService;
 
 	@Override
 	public void addFood(FoodModel foodModel) {
-		Food food = new Food();
-		
-		food.setName(foodModel.getName());
-		food.setContent(foodModel.getContent());
-		food.setPrice(foodModel.getPrice());
-		food.setView(0);
-		food.setCreatedAt(new Date());
-		food.setDelete(false);
-		food.setCreatedBy(foodModel.getCreatedBy());
-		food.setShop(shopDao.getOne(foodModel.getShopId()));
-		
-		foodDao.save(food);
+		if(foodModel != null) {
+			Food food = new Food();
+			
+			food.setName(foodModel.getName());
+			food.setContent(foodModel.getContent());
+			food.setPrice(foodModel.getPrice());
+			food.setView(0);
+			food.setCreatedAt(new Date());
+			food.setDelete(false);
+			food.setCreatedBy(foodModel.getCreatedBy());
+			food.setShop(shopDao.getOne(foodModel.getShopId()));
+			
+			foodDao.save(food);
+		}
 	}
 
 	@Override
 	public void editFood(FoodModel foodModel) {
-		
-		Food food = foodDao.getOne(foodModel.getId());
-		
-		food.setName(foodModel.getName());
-		food.setContent(foodModel.getContent());
-		food.setPrice(foodModel.getPrice());
-		foodDao.save(food);
+		if(foodDao.existsById(foodModel.getId())) {
+			Food food = foodDao.getOne(foodModel.getId());
+			
+			food.setName(foodModel.getName());
+			food.setContent(foodModel.getContent());
+			food.setPrice(foodModel.getPrice());
+			foodDao.saveAndFlush(food);
+		}
 	}
 
 	@Override
 	public void deleteFood(int id) {
-		Food food = foodDao.getOne(id);
-		food.setDelete(true);
-		foodDao.saveAndFlush(food);
+		if(foodDao.existsById(id)) {
+			Food food = foodDao.getOne(id);
+			food.setDelete(true);
+			foodDao.saveAndFlush(food);
+		}
 	}
 
 	@Override
 	public List<FoodModel> getFoodByShopId(int shopId) {
-		List<Food> foods = foodDao.getFoodByShopId(shopId);
-		List<FoodModel> foodModels = getListFoodModel(foods);
-		return foodModels;
+		if(shopId != 0) {
+			List<Food> foods = foodDao.getFoodByShopId(shopId);
+			List<FoodModel> foodModels = getListFoodModel(foods);
+			return foodModels;
+		}else {
+			return null;
+		}
 	}
 
 	@Override
 	public List<FoodModel> getListFoodByNameFood(String nameFood) {
-		List<Food> foods = foodDao.getListFoodByNameContaining(nameFood);
-		List<FoodModel> foodModels = getListFoodModel(foods);
-		return foodModels;
+		if(nameFood != null) {
+			List<Food> foods = foodDao.getListFoodByNameContaining(nameFood);
+			List<FoodModel> foodModels = getListFoodModel(foods);
+			return foodModels;
+		}else {
+			return null;
+		}
 	}
 
 	@Override
@@ -82,16 +92,24 @@ public class FoodService implements IFoodService {
 
 	@Override
 	public List<FoodModel> getFoodByShopIdAndActive(int shopId, boolean active) {
-		List<Food> foods = foodDao.getFoodByShopIdAndIsDelete(shopId, active);
-		List<FoodModel> foodModels = getListFoodModel(foods);
-		return foodModels;
+		if(shopId != 0) {
+			List<Food> foods = foodDao.getFoodByShopIdAndIsDelete(shopId, active);
+			List<FoodModel> foodModels = getListFoodModel(foods);
+			return foodModels;
+		}else {
+			return null;
+		}
 	}
 
 	@Override
 	public List<FoodModel> getListFoodByNameContainingAndActive(String nameFood, boolean active) throws SQLException {
-		List<Food> foods = foodDao.getListFoodByNameContainingAndIsDelete(nameFood, active);
-		List<FoodModel> foodModels = getListFoodModel(foods);
-		return foodModels;
+		if(nameFood != null) {
+			List<Food> foods = foodDao.getListFoodByNameContainingAndIsDelete(nameFood, active);
+			List<FoodModel> foodModels = getListFoodModel(foods);
+			return foodModels;
+		}else {
+			return null;
+		}
 	}
 
 	@Override
@@ -114,19 +132,18 @@ public class FoodService implements IFoodService {
 			foodModel.setDelete(food.isDelete());
 			foodModel.setCreatedBy(food.getCreatedBy());
 			foodModel.setShopId(food.getShop().getId());
-			foodModel.setImageFoodIds(getListImageFood(food.getId()));
 			
 			foodModels.add(foodModel);
 		}
 		return foodModels;
 	}
-	private List<Integer> getListImageFood(int foodId){
-		List<ImageFoodModel> listImageFood = imageFoodService.getImageFood(foodId);
-		List<Integer> listImageFoodId = new ArrayList<Integer>();
-		for(ImageFoodModel image : listImageFood) {
-			listImageFoodId.add(image.getId());
-		}
-		return listImageFoodId;
-	}
+//	private List<Integer> getListImageFood(int foodId){
+//		List<ImageFoodModel> listImageFood = imageFoodService.getImageFood(foodId);
+//		List<Integer> listImageFoodId = new ArrayList<Integer>();
+//		for(ImageFoodModel image : listImageFood) {
+//			listImageFoodId.add(image.getId());
+//		}
+//		return listImageFoodId;
+//	}
 
 }

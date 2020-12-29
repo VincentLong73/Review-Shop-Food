@@ -3,6 +3,7 @@ package com.soict.reviewshopfood.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,6 +12,7 @@ import com.soict.reviewshopfood.model.RatingOfFood;
 import com.soict.reviewshopfood.service.impl.RateService;
 @RestController
 @RequestMapping(value="/api/rating")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class RatingController {
 	@Autowired
 	private RateService rateService;

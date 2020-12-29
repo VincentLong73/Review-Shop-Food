@@ -12,7 +12,6 @@ public class ImageAvatarModel {
 	private String fileName;
 	private String fileDownloadUri;
 	private String fileType;
-	private byte[] data;
 	private int userId;
 	public ImageAvatarModel(String fileName, String fileDownloadUri, String contentType, long size) {
 		// TODO Auto-generated constructor stub

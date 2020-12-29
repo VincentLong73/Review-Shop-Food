@@ -12,9 +12,12 @@ public class ImageFoodModel {
 	private String fileName;
 	private String fileDownloadUri;
 	private String fileType;
-	private byte[] data;
 	private int foodId;
-	public ImageFoodModel(String fileName, String fileDownloadUri, String contentType, long size) {
-		// TODO Auto-generated constructor stub
+    private long size;
+	public ImageFoodModel(String fileName, String fileDownloadUri, String fileType, long size) {
+		this.fileName = fileName;
+        this.fileDownloadUri = fileDownloadUri;
+        this.fileType = fileType;
+        this.size = size;
 	}
 }
