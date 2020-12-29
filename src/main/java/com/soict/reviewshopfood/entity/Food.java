@@ -58,10 +58,6 @@ public class Food implements Serializable{
 	@Column(name="is_delete")
 	private boolean isDelete;
 	
-	@OneToMany(mappedBy = "food", cascade = CascadeType.ALL )
-	@EqualsAndHashCode.Exclude
-    @ToString.Exclude
-	private List<Rate> rates = new ArrayList<>();
 	
 	@OneToMany(mappedBy = "food", cascade = CascadeType.ALL )
 	@EqualsAndHashCode.Exclude

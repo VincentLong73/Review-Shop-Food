@@ -32,7 +32,7 @@ public class CommentService implements ICommentService{
 	public void addComment(CommentModel commentModel) {
 		if(commentModel != null && foodDao.existsById(commentModel.getFoodId())) {
 			Comment comment = new Comment();
-			
+			comment.setRate(commentModel.getRate());
 			comment.setContent(commentModel.getContent());
 			comment.setCreatedAt(new Date());
 			comment.setUser(userDao.getOne(commentModel.getUserId()));
@@ -56,6 +56,7 @@ public class CommentService implements ICommentService{
 				commentModel.setCountLike(listLike.size());
 				commentModel.setListLike(listLike);
 				commentModel.setId(comment.getId());
+				commentModel.setRate(comment.getRate());
 				commentModel.setContent(comment.getContent());
 				commentModel.setCreatedAt(comment.getCreatedAt());
 				commentModel.setUserId(comment.getUser().getId());

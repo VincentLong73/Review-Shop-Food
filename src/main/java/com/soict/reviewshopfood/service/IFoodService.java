@@ -19,5 +19,6 @@ public interface IFoodService {
 	List<FoodModel> getFoodByShopIdAndActive(int shopId,boolean active); 		// Lay cac mon an con active
 	//Lay danh sach mon an theo ten con active
 	List<FoodModel> getListFoodByNameContainingAndActive(String nameFood,boolean active) throws SQLException; 
-	List<FoodModel> getFoodByView() throws SQLException; // Lay cac mon an theo so luong view
+	List<FoodModel> getFoodByView() throws SQLException; 						// Lay cac mon an theo so luong view
+	FoodModel getFoodByIdAndActive(int id) throws SQLException; 	//lay mon an theo id con ban
 }

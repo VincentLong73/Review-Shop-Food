@@ -12,11 +12,12 @@ import lombok.NoArgsConstructor;
 public class ShopModel {
 	private int id;
 	private String nameShop;
+	private String description;
 	private String image;
+	private int userId;
 	private Date createdAt;
-	private Date modifiedAt;
 	private String createdBy;
-	private String modifiedBy;
+	private Date updateDate;
 	private AddressModel addressModel;
 	private boolean isDelete;
 }

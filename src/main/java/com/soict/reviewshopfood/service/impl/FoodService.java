@@ -8,8 +8,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.soict.reviewshopfood.dao.ICommentDAO;
 import com.soict.reviewshopfood.dao.IFoodDAO;
 import com.soict.reviewshopfood.dao.IShopDAO;
+import com.soict.reviewshopfood.entity.Comment;
 import com.soict.reviewshopfood.entity.Food;
 import com.soict.reviewshopfood.model.FoodModel;
 import com.soict.reviewshopfood.service.IFoodService;
@@ -21,6 +23,8 @@ public class FoodService implements IFoodService {
 	private IFoodDAO foodDao;
 	@Autowired
 	private IShopDAO shopDao;
+	@Autowired
+	private ICommentDAO commentDao;
 
 	@Override
 	public void addFood(FoodModel foodModel) {
@@ -131,7 +135,16 @@ public class FoodService implements IFoodService {
 			foodModel.setCreatedAt(food.getCreatedAt());
 			foodModel.setDelete(food.isDelete());
 			foodModel.setCreatedBy(food.getCreatedBy());
+			foodModel.setView(food.getView());
 			foodModel.setShopId(food.getShop().getId());
+			
+			int sumRate = 0;
+			List<Comment> listComment = commentDao.getListCommentByFoodId(food.getId());
+			for(Comment comment : listComment) {
+				sumRate = sumRate + comment.getRate();
+			}
+			// Tinh rating tu cac diem rate cua food
+			foodModel.setRating((double) Math.round(((double)sumRate/listComment.size()) * 10) / 10);
 			
 			foodModels.add(foodModel);
 		}
@@ -145,5 +158,34 @@ public class FoodService implements IFoodService {
 //		}
 //		return listImageFoodId;
 //	}
+
+	@Override
+	public FoodModel getFoodByIdAndActive(int id) throws SQLException {
+		
+		if(foodDao.getFoodByIdAndIsDelete(id, false) != null) {
+			Food food = foodDao.getFoodByIdAndIsDelete(id, false);
+			FoodModel foodModel = new FoodModel();
+			
+			foodModel.setId(food.getId());
+			foodModel.setName(food.getName());
+			foodModel.setContent(food.getContent());
+			foodModel.setPrice(food.getPrice());
+			foodModel.setCreatedAt(food.getCreatedAt());
+			foodModel.setDelete(food.isDelete());
+			foodModel.setCreatedBy(food.getCreatedBy());
+			foodModel.setView(food.getView());
+			foodModel.setShopId(food.getShop().getId());
+			int sumRate = 0;
+			List<Comment> listComment = commentDao.getListCommentByFoodId(food.getId());
+			for(Comment comment : listComment) {
+				sumRate = sumRate + comment.getRate();
+			}
+			// Tinh rating tu cac diem rate cua food
+			foodModel.setRating((double) Math.round(((double)sumRate/listComment.size()) * 10) / 10);
+			return foodModel;
+		}
+		return null;
+		
+	}
 
 }

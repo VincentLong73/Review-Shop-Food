@@ -34,12 +34,13 @@ public class AdminController {
 	@Autowired
 	private FoodService foodService;
 	
-	@GetMapping(value="/listCustomer/{code}")
-	public ResponseEntity<Object> getListCustomer(@PathVariable("code") String code){
+	//Lay list user theo role (customer, bos_shop, admin)
+	@GetMapping(value="/listCustomer/{codeRole}")
+	public ResponseEntity<Object> getListCustomer(@PathVariable("codeRole") String codeRole){
 		HttpStatus httpStatus = null;
 		List<UserModel> userModels = new ArrayList<UserModel>();
 		try {
-			userModels = userService.getListUserByRoleId(code);
+			userModels = userService.getListUserByRoleId(codeRole);
 			httpStatus = HttpStatus.OK;
 		}catch(Exception e) {
 			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -47,6 +48,7 @@ public class AdminController {
 		}
 		return new ResponseEntity<Object>(userModels,httpStatus);
 	}
+	//Lay list shop
 	@GetMapping(value="/listShop")
 	public ResponseEntity<Object> getListShop(){
 		HttpStatus httpStatus = null;
@@ -60,6 +62,7 @@ public class AdminController {
 		}
 		return new ResponseEntity<Object>(shopModels,httpStatus);
 	}
+	//Lay list food
 	@GetMapping(value="/listFood")
 	public ResponseEntity<Object> getListFood(){
 		HttpStatus httpStatus = null;
@@ -87,12 +90,25 @@ public class AdminController {
 		}
 		return new ResponseEntity<Object>(httpStatus);
 	}
-	
+	//block User theo idUser
 	@PutMapping(value = "/blockUser/{idUser}")
-	public ResponseEntity<String> editUser(@PathVariable("idUser") int idUser) {
-		HttpStatus httpStatus = null;
+	public ResponseEntity<String> blockUser(@PathVariable("idUser") int idUser) {
+		HttpStatus httpStatus = HttpStatus.NOT_ACCEPTABLE;
 		try {
-			userService.blockUser(idUser);
+			userService.blockOrUnblockUser(idUser,false);
+			httpStatus = HttpStatus.OK;
+		}catch(Exception e) {
+			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+			System.out.println(e);
+		}
+		return new ResponseEntity<String>(httpStatus);
+	}
+	//unBlock User theo idUser
+	@PutMapping(value = "/unBlockUser/{idUser}")
+	public ResponseEntity<String> unBlockUser(@PathVariable("idUser") int idUser) {
+		HttpStatus httpStatus = HttpStatus.NOT_ACCEPTABLE;
+		try {
+			userService.blockOrUnblockUser(idUser,true);
 			httpStatus = HttpStatus.OK;
 		}catch(Exception e) {
 			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;

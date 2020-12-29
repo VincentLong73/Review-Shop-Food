@@ -25,22 +25,29 @@ public class FoodController {
 	@Autowired
 	private FoodService foodService;
 
-	// lay mon an (ke ca da active = false)
+	// lay mon an theo id va con ban
 	@RequestMapping(value = "/getFood/{id}")
 	public ResponseEntity<Object> getFood(@PathVariable("id") int id) {
 		HttpStatus httpStatus = null;
-		List<FoodModel> foodModels = new ArrayList<FoodModel>();
+		FoodModel foodModel = new FoodModel();
 		try {
-			foodModels = foodService.getFoodByShopId(id);
-			httpStatus = HttpStatus.OK;
+			foodModel = foodService.getFoodByIdAndActive(id);
+			if(foodModel != null) {
+				httpStatus = HttpStatus.OK;
+				foodModel.setView(foodModel.getView() + 1);
+				foodService.editFood(foodModel);
+			}else {
+				httpStatus = HttpStatus.NO_CONTENT;
+			}
+			
 		} catch (Exception e) {
 			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 			System.out.println(e);
 		}
-		return new ResponseEntity<Object>(foodModels, httpStatus);
+		return new ResponseEntity<Object>(foodModel, httpStatus);
 	}
 
-	// lay cac mon an con actice
+	// lay cac mon an con actice theo shop
 	@RequestMapping(value = "/getFoodAndActive/{id}")
 	public ResponseEntity<Object> getFoodAndActive(@PathVariable("id") int id) {
 		HttpStatus httpStatus = null;
@@ -114,6 +121,7 @@ public class FoodController {
 		return new ResponseEntity<Object>(httpStatus);
 	}
 
+	//Sua thong tin food
 	@PutMapping(value = "/editFood", produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 	public ResponseEntity<Object> editFood(FoodModel foodModel) {
 

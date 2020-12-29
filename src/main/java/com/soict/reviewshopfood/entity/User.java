@@ -48,6 +48,9 @@ public class User implements Serializable{/**
 	@Column(name="fullname")
 	private String fullName;
 	
+	@Column(name="image_url")
+	private String imageUrl;
+	
 	@Column(name="email")
 	private String email;
 	
@@ -61,11 +64,18 @@ public class User implements Serializable{/**
 	private Date modifiedDate;
 	@Column(name="avatar_url")
 	private String avatarUrl;
+	@Column(name="created_by")
+	private String createdBy;
 	
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 	@EqualsAndHashCode.Exclude
     @ToString.Exclude
 	private List<Comment> comments = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	@EqualsAndHashCode.Exclude
+    @ToString.Exclude
+	private List<Shop> shops = new ArrayList<>();
 	
 	@ManyToOne
 	@JoinColumn(name="role_id")
@@ -76,7 +86,7 @@ public class User implements Serializable{/**
 	public List<GrantedAuthority> getAuthorities() {
 
 		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-		authorities.add(new SimpleGrantedAuthority(this.role.getRoleName()));
+		authorities.add(new SimpleGrantedAuthority(this.role.getCode()));
 
 		return authorities;
 	}

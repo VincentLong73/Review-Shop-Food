@@ -27,5 +27,4 @@ public interface IUserService {
 
 	UserModel getUserByEmail(String email);
 	void updateUser(User user);
-//	boolean updateAvatar(User user);
 }
