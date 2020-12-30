@@ -18,4 +18,5 @@ public interface IUserService {
 	UserModel getUserById(int id)	throws SQLException;							//Lay user theo id
 	void blockOrUnblockUser(int id, boolean active) throws SQLException;							//Admin khoa/mo tai khoan nguoi dung
 	boolean editUser(UserModel user, String email) throws SQLException;								//Sua thong tin user
+
 }

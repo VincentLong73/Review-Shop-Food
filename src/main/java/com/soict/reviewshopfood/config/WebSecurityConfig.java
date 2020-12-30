@@ -69,12 +69,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 //		http.csrf().disable();
 //		http.authorizeRequests().antMatchers("/aims/login","/aims/logout","/aims/editProduct/*","/aims/deleteProduct/*","/users/*").permitAll();
 		httpSecurity.authorizeRequests().antMatchers("/api/auth/**").permitAll();
+		httpSecurity.cors().disable();
 		httpSecurity.csrf().ignoringAntMatchers("/api/**");
 		httpSecurity.antMatcher("/api/**")
 				.httpBasic().authenticationEntryPoint(restAuthenticationEntryPoint()).and()
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
 				
-				.antMatchers("/api/user/**").hasAnyAuthority("ROLE_CUSTOMER","ROLE_SHOP","ROLE_ADMIN")
+				.antMatchers("/api/user/**").permitAll()
 				
 				.antMatchers(HttpMethod.GET,"/api/image/**").hasAnyAuthority("ROLE_CUSTOMER","ROLE_SHOP","ROLE_ADMIN")
 				.antMatchers(HttpMethod.POST,"/api/image/uploadImageAvatar/**").hasAnyAuthority("ROLE_CUSTOMER","ROLE_SHOP","ROLE_ADMIN")
