@@ -90,5 +90,20 @@ public class ImageFoodService implements IImageFoodService{
 		}
 		return listImageFoodId;
 	}
+	@Override
+	public Resource getImageFoodByName(String imageUrl) throws SQLException {
+		try {
+			Path filePath = this.fileStorageLocation.resolve(imageUrl).normalize();
+			Resource resource = new UrlResource(filePath.toUri());
+			if(resource.exists()) {
+				return resource;
+			}else {
+				throw new MyFileNotFoundException("File not found avatar !");
+			}
+			
+		}catch(MalformedURLException e) {
+			throw new MyFileNotFoundException("File not found avatar !");
+		}
+	}
 
 }

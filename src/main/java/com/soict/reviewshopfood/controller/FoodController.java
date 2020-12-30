@@ -32,14 +32,14 @@ public class FoodController {
 		FoodModel foodModel = new FoodModel();
 		try {
 			foodModel = foodService.getFoodByIdAndActive(id);
-			if(foodModel != null) {
+			if (foodModel != null) {
 				httpStatus = HttpStatus.OK;
 				foodModel.setView(foodModel.getView() + 1);
 				foodService.editFood(foodModel);
-			}else {
+			} else {
 				httpStatus = HttpStatus.NO_CONTENT;
 			}
-			
+
 		} catch (Exception e) {
 			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 			System.out.println(e);
@@ -107,6 +107,36 @@ public class FoodController {
 		return new ResponseEntity<Object>(foodModels, httpStatus);
 	}
 
+	// lay cac mon an con actice theo rating
+	@RequestMapping(value = "/getFoodByOrderByViewAscAndIsDelete")
+	public ResponseEntity<Object> getFoodByOrderByRateAsc() {
+		HttpStatus httpStatus = null;
+		List<FoodModel> foodModels = new ArrayList<FoodModel>();
+		try {
+			foodModels = foodService.getFoodByView();
+			httpStatus = HttpStatus.OK;
+		} catch (Exception e) {
+			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+			System.out.println(e);
+		}
+		return new ResponseEntity<Object>(foodModels, httpStatus);
+	}
+
+	// lay cac mon an con actice theo ngay dang
+	@RequestMapping(value = "/getFoodByOrderByViewAscAndIsDelete")
+	public ResponseEntity<Object> getFoodByCreatedAtAsc() {
+		HttpStatus httpStatus = null;
+		List<FoodModel> foodModels = new ArrayList<FoodModel>();
+		try {
+			foodModels = foodService.getFoodByView();
+			httpStatus = HttpStatus.OK;
+		} catch (Exception e) {
+			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+			System.out.println(e);
+		}
+		return new ResponseEntity<Object>(foodModels, httpStatus);
+	}
+
 	@RequestMapping(value = "/addFood", method = RequestMethod.POST, produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 	public ResponseEntity<Object> addFood(FoodModel foodModel) {
 		HttpStatus httpStatus = null;
@@ -121,7 +151,7 @@ public class FoodController {
 		return new ResponseEntity<Object>(httpStatus);
 	}
 
-	//Sua thong tin food
+	// Sua thong tin food
 	@PutMapping(value = "/editFood", produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 	public ResponseEntity<Object> editFood(FoodModel foodModel) {
 

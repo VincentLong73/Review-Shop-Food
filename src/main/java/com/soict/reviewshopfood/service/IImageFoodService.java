@@ -9,5 +9,6 @@ import org.springframework.web.multipart.MultipartFile;
 public interface IImageFoodService {
 	void storeFileImageFood(MultipartFile[] files,int foodId) throws SQLException;
 	Resource getImageFood(int imageId) throws SQLException;
+	Resource getImageFoodByName(String imageUrl) throws SQLException;
 	List<Integer> getListIdImageFood(int foodId) throws SQLException;
 }

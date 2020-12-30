@@ -52,36 +52,22 @@ public class AuthController {
 	public ResponseEntity<Object> login(User user, HttpServletResponse response, HttpServletRequest request) {
 
 		HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
-		UserModel userModel = null;
+		String status = null;
 		try {
 			if (userService.checkLogin(user)) {
 				String result = jwtService.generateTokenLogin(user.getEmail());
 				Cookie jwt = utils.createCookie("Authorization", result, true, (long) 3600);
-
-				Cookie[] cookies = request.getCookies();
-				if (cookies == null) {
-					response.addCookie(jwt);
-				} else {
-					if (utils.checkCookies(cookies)) {
-						for (Cookie cookie : cookies) {
-							if (cookie.getName().equals("Authorization")) {
-								cookie.setValue(jwt.getValue());
-								cookie.setMaxAge(jwt.getMaxAge());
-								break;
-							}
-						}
-					} else {
-						response.addCookie(jwt);
-					}
-				}
-				userModel = userService.findByEmailAfterLogin(user.getEmail());
+				
+				response.addCookie(jwt);
 				httpStatus = HttpStatus.OK;
+				status = "Login successfully";
+			}else {
+				status = "Email or Password is wrong!";
 			}
 		} catch (Exception ex) {
 			System.out.println(ex.getMessage());
-			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 		}
-		return new ResponseEntity<Object>(userModel, httpStatus);
+		return new ResponseEntity<Object>(status, httpStatus);
 	}
 
 	@RequestMapping(value = "/logout", method = RequestMethod.GET)

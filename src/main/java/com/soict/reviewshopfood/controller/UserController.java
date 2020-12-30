@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,9 +42,11 @@ public class UserController {
 	@PutMapping(value="/editUser",produces = { MediaType.APPLICATION_JSON_VALUE,
 			MediaType.APPLICATION_FORM_URLENCODED_VALUE , MediaType.MULTIPART_FORM_DATA_VALUE})
 	public ResponseEntity<String> editUser(UserModel userModel){
+		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		HttpStatus httpStatus = null;
 		try {
-			if(userService.editUser(userModel)) {
+			if(userService.editUser(userModel, auth.getName())) {
 				httpStatus = HttpStatus.OK;
 			}else {
 				httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;

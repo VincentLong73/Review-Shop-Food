@@ -17,5 +17,5 @@ public interface IUserService {
 	//void applyNewPassword(User user)	throws SQLException;						//Cap nhat lai password
 	UserModel getUserById(int id)	throws SQLException;							//Lay user theo id
 	void blockOrUnblockUser(int id, boolean active) throws SQLException;							//Admin khoa/mo tai khoan nguoi dung
-	boolean editUser(UserModel user) throws SQLException;								//Sua thong tin user
+	boolean editUser(UserModel user, String email) throws SQLException;								//Sua thong tin user
 }
