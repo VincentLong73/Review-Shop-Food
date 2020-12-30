@@ -62,16 +62,18 @@ public class UserController {
 			if (userEditFormModel.getPassword() != null) {
 				if (user.getPassword().equals(userEditFormModel.getPassword())) {
 					user.setPassword(userEditFormModel.getNewPassword());
+					userService.updateUser(user);
 				}
 			}
-			userService.updateUser(user);
+			if(userEditFormModel.getPassword() == null){
+				userService.updateUser(user);
+			}
 			httpStatus = HttpStatus.OK;
 		}
 		return new ResponseEntity<String>(httpStatus);
 	}
 	
-	@PutMapping(value="/editUser",produces = { MediaType.APPLICATION_JSON_VALUE,
-			MediaType.APPLICATION_FORM_URLENCODED_VALUE , MediaType.MULTIPART_FORM_DATA_VALUE})
+	@PostMapping(value="/editAvatarUser",produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
 	public ResponseEntity<String> editUser(UserModel userModel){
 		HttpStatus httpStatus = null;
 		try {

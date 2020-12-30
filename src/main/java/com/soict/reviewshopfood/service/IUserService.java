@@ -1,11 +1,11 @@
 package com.soict.reviewshopfood.service;
 
 
-import java.sql.SQLException;
-import java.util.List;
-
 import com.soict.reviewshopfood.entity.User;
 import com.soict.reviewshopfood.model.UserModel;
+
+import java.sql.SQLException;
+import java.util.List;
 
 public interface IUserService {
 
@@ -23,7 +23,7 @@ public interface IUserService {
 
 	UserModel getUserById(int id) throws SQLException;                            //Lay user theo id
 
-	void blockUser(int id) throws SQLException;                                    //Admin khoa tai khoan nguoi dung
+//	void blockUser(int id) throws SQLException;                                    //Admin khoa tai khoan nguoi dung
 
 	UserModel getUserByEmail(String email);
 	void updateUser(User user);
