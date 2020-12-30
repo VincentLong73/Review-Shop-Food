@@ -17,6 +17,7 @@ public class FoodModel {
 	private List<Integer> markRates;
 	private double rating;
 	private String content;
+	private String shortDescription;
 	private float price;
 	private int view;
 	private Date createdAt;
