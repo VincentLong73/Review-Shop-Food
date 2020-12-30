@@ -59,13 +59,28 @@ public class ImageAvatarService implements IImageAvatarService {
 		user.setImageUrl(fileName);
 		userDao.saveAndFlush(user);
 		
-		
 	}
 
 	@Override
 	public Resource getImageAvatar(int userId) throws SQLException {
 		try {
 			Path filePath = this.fileStorageLocation.resolve(userDao.getOne(userId).getImageUrl()).normalize();
+			Resource resource = new UrlResource(filePath.toUri());
+			if (resource.exists()) {
+				return resource;
+			} else {
+				throw new MyFileNotFoundException("File not found avatar !");
+			}
+
+		} catch (MalformedURLException e) {
+			throw new MyFileNotFoundException("File not found avatar !");
+		}
+	}
+	
+	@Override
+	public Resource getImageAvatarByEmail(String email) throws SQLException {
+		try {
+			Path filePath = this.fileStorageLocation.resolve(userDao.findByEmail(email).getImageUrl()).normalize();
 			Resource resource = new UrlResource(filePath.toUri());
 			if (resource.exists()) {
 				return resource;

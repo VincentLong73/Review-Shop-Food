@@ -108,7 +108,7 @@ public class FoodController {
 	}
 
 	// lay cac mon an con actice theo rating
-	@RequestMapping(value = "/getFoodByOrderByViewAscAndIsDelete")
+	@RequestMapping(value = "/getFoodByOrderByRateAsc")
 	public ResponseEntity<Object> getFoodByOrderByRateAsc() {
 		HttpStatus httpStatus = null;
 		List<FoodModel> foodModels = new ArrayList<FoodModel>();
@@ -123,7 +123,7 @@ public class FoodController {
 	}
 
 	// lay cac mon an con actice theo ngay dang
-	@RequestMapping(value = "/getFoodByOrderByViewAscAndIsDelete")
+	@RequestMapping(value = "/getFoodByCreatedAtAsc")
 	public ResponseEntity<Object> getFoodByCreatedAtAsc() {
 		HttpStatus httpStatus = null;
 		List<FoodModel> foodModels = new ArrayList<FoodModel>();
