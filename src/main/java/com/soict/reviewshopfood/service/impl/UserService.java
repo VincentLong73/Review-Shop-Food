@@ -215,7 +215,7 @@ public class UserService implements IUserService, UserDetailsService {
 			if(user.getFullName().equals(userModel.getFullName()) && userModel.getFullName() != null) {
 				user.setFullName(userModel.getFullName());
 			}
-			
+			user.setUpdateAt(new Date());
 			userDao.saveAndFlush(user);
 			return true;
 		}	

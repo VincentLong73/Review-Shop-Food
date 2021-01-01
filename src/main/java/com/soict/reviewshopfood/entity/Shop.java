@@ -48,8 +48,8 @@ public class Shop implements Serializable {/**
 	@Column(name="created_by")
 	private String createdBy;
 	
-	@Column(name="update_date")
-	private Date updateDate;
+	@Column(name="update_at")
+	private Date updateAt;
 	
 	@OneToOne
 	@JoinColumn(name="address_id")

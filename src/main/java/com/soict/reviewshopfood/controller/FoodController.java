@@ -9,13 +9,17 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.soict.reviewshopfood.model.FoodModel;
 import com.soict.reviewshopfood.service.impl.FoodService;
+import com.soict.reviewshopfood.service.impl.ImageFoodService;
 
 @RestController
 @RequestMapping(value = "/api/food")
@@ -24,6 +28,8 @@ public class FoodController {
 
 	@Autowired
 	private FoodService foodService;
+	@Autowired
+	private ImageFoodService imageFoodService;
 
 	// lay mon an theo id va con ban
 	@RequestMapping(value = "/getFood/{id}")
@@ -137,17 +143,38 @@ public class FoodController {
 		return new ResponseEntity<Object>(foodModels, httpStatus);
 	}
 
-	@RequestMapping(value = "/addFood", method = RequestMethod.POST, produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+	//Them mon an
+	@RequestMapping(value = "/addFood", method = RequestMethod.POST, produces = { MediaType.APPLICATION_FORM_URLENCODED_VALUE
+																				, MediaType.MULTIPART_FORM_DATA_VALUE})
 	public ResponseEntity<Object> addFood(FoodModel foodModel) {
 		HttpStatus httpStatus = null;
+		
 		try {
-			foodService.addFood(foodModel);
-			httpStatus = HttpStatus.OK;
+			if(foodService.addFood(foodModel)) {
+				httpStatus = HttpStatus.OK;
+			}else {
+				httpStatus = HttpStatus.NO_CONTENT;
+			}
 		} catch (Exception e) {
 			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 			System.out.println(e);
 		}
 
+		return new ResponseEntity<Object>(httpStatus);
+	}
+	
+	//Them anh cho mon an theo foodId
+	@PostMapping("/uploadImageFood/{foodId}")
+	public ResponseEntity<Object> uploadMultiFiles(@RequestParam("files") MultipartFile files[],
+			@PathVariable("foodId") int foodId) {
+		HttpStatus httpStatus = null;
+		try {
+			imageFoodService.storeFileImageFood(files, foodId);
+			httpStatus = HttpStatus.OK;
+		} catch (Exception e) {
+			System.out.println(e);
+			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+		}
 		return new ResponseEntity<Object>(httpStatus);
 	}
 

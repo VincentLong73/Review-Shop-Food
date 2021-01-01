@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +17,7 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.soict.reviewshopfood.dao.IFoodDAO;
 import com.soict.reviewshopfood.dao.IImageFoodDAO;
@@ -33,6 +35,8 @@ public class ImageFoodService implements IImageFoodService{
 	private IFoodDAO foodDao;
 	
 	private final Path fileStorageLocation;
+	final String startFileNameThumbnail = "thumbnail";
+	final String startFileNameImageFood = "imageFood";
 
     @Autowired
     public ImageFoodService(FileStorageProperties fileStorageProperties) {
@@ -53,6 +57,9 @@ public class ImageFoodService implements IImageFoodService{
 				if (fileName.contains("..")) {
 					throw new FileStorageException("Sorry! Filenamecontains invalid path sequence" + fileName);
 				}
+				Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+				String token = String.valueOf(timestamp.getTime());
+				fileName = startFileNameImageFood+token.concat(fileName);
 				Path targetLocation = this.fileStorageLocation.resolve(fileName);
 				Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 				ImageFood image = new ImageFood();
@@ -62,6 +69,7 @@ public class ImageFoodService implements IImageFoodService{
 			} catch (IOException e) {
 				throw new FileStorageException("Could not store file " + fileName + ". Please try again!", e);
 			}
+
 		}
 	}
 
@@ -82,18 +90,37 @@ public class ImageFoodService implements IImageFoodService{
 		}
 	}
 	@Override
-	public List<Integer> getListIdImageFood(int foodId) throws SQLException {
-		List<Integer> listImageFoodId = new ArrayList<Integer>();
+	public List<String> getListImageFood(int foodId) throws SQLException {
+		List<String> listImageFoodUrl = new ArrayList<String>();
 		List<ImageFood> listImageFood = imageFoodDao.findByFoodId(foodId);
 		for(ImageFood image : listImageFood) {
-			listImageFoodId.add(image.getId());
+			String imageUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
+					.path("/images/"+image.getImageUrl())
+					.toUriString();
+			listImageFoodUrl.add(imageUrl);
 		}
-		return listImageFoodId;
+		return listImageFoodUrl;
 	}
 	@Override
 	public Resource getImageFoodByName(String imageUrl) throws SQLException {
 		try {
 			Path filePath = this.fileStorageLocation.resolve(imageUrl).normalize();
+			Resource resource = new UrlResource(filePath.toUri());
+			if(resource.exists()) {
+				return resource;
+			}else {
+				throw new MyFileNotFoundException("File not found avatar !");
+			}
+			
+		}catch(MalformedURLException e) {
+			throw new MyFileNotFoundException("File not found avatar !");
+		}
+	}
+	@Override
+	public Resource getThumbnailFood(String thumbnail) throws SQLException {
+		System.out.println(this.fileStorageLocation.toUri()+thumbnail);
+		try {
+			Path filePath = this.fileStorageLocation.resolve(thumbnail).normalize();
 			Resource resource = new UrlResource(filePath.toUri());
 			if(resource.exists()) {
 				return resource;

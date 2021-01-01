@@ -3,6 +3,8 @@ package com.soict.reviewshopfood.model;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,15 +15,18 @@ import lombok.NoArgsConstructor;
 public class FoodModel {
 	private int id;
 	private String name;
-	private List<Integer> imageFoodIds;
+	private List<String> listImageFoodUrl;
 	private List<Integer> markRates;
 	private double rating;
 	private String content;
 	private String shortDescription;
+	private String thumbnail;
 	private float price;
 	private int view;
 	private Date createdAt;
 	private String createdBy;
+	private Date updateAt;
 	private int shopId;
+	private MultipartFile thumbnailFile;
 	private boolean isDelete;
 }
