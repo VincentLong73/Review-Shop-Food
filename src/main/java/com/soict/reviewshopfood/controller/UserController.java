@@ -154,7 +154,7 @@ public class UserController {
 			InputStream inputStream = file.getInputStream();
 			Files.copy(inputStream, path.resolve(fileName), StandardCopyOption.REPLACE_EXISTING);
 			iImageAvatarService.saveFile(fileName, auth.getName());
-			urlImage = "http://localhost:9091/api/user/avatar/".concat(fileName);
+			urlImage = fileName;
 			httpStatus = HttpStatus.OK;
 		} catch (Exception e) {
 			e.getStackTrace();
