@@ -12,13 +12,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -72,17 +67,19 @@ public class UserController {
 		}
 		return new ResponseEntity<String>(httpStatus);
 	}
-	
+
 	@PostMapping(value="/editAvatarUser",produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
 	public ResponseEntity<String> editUser(UserModel userModel){
+
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		HttpStatus httpStatus = null;
 		try {
-			if(userService.editUser(userModel)) {
+			if(userService.editUser(userModel, auth.getName())) {
 				httpStatus = HttpStatus.OK;
 			}else {
 				httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 			}
-			
+
 		}catch(Exception e) {
 			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 			System.out.println(e);

@@ -1,18 +1,14 @@
 package com.soict.reviewshopfood.service.impl;
 
-import com.soict.reviewshopfood.entity.User;
-import com.soict.reviewshopfood.model.UserModel;
-import com.soict.reviewshopfood.service.IUserService;
-import org.apache.commons.lang.RandomStringUtils;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import org.apache.commons.lang.RandomStringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -21,7 +17,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
+
 import com.soict.reviewshopfood.dao.IRoleDAO;
 import com.soict.reviewshopfood.dao.IUserDAO;
 import com.soict.reviewshopfood.entity.User;
@@ -164,6 +160,11 @@ public class UserService implements IUserService, UserDetailsService {
 		return userModel;
 	}
 
+	@Override
+	public void updateUser(User user) {
+
+	}
+
 
 	@Override
 	public UserModel findByEmailAfterLogin(String email) throws SQLException {
@@ -204,30 +205,17 @@ public class UserService implements IUserService, UserDetailsService {
 	}
 
 	@Override
-	public void updateUser(User user) {
-		User userfind = userDao.findByEmail(user.getEmail());
-		userfind.setFullName(user.getFullName());
-		userfind.setUserName(user.getUserName());
-		userfind.setPassword(user.getPassword());
-		userDao.save(userfind);
-  }
-      
-	public boolean editUser(UserModel userModel) throws SQLException {
-		if(userDao.existsById(userModel.getId())) {
-			User user = modelMapper.map(userModel, User.class);
-			user.setRole(roleDao.findByCode(userModel.getCodeRole()));
-			String fileName = StringUtils.cleanPath(userModel.getFile().getOriginalFilename());
-			try {
-				if (fileName.contains("..")) {
-					throw new FileStorageException("Sorry! Filenamecontains invalid path sequence" + fileName);
-				}
-				Path targetLocation = this.fileStorageLocation.resolve(fileName);
-				Files.copy(userModel.getFile().getInputStream(), targetLocation,StandardCopyOption.REPLACE_EXISTING);
-				
-				user.setImageUrl(fileName);
-			} catch (IOException e) {
-				throw new FileStorageException("Could not store file " + fileName + ". Please try again!", e);
+	public boolean editUser(UserModel userModel, String email) throws SQLException {
+		
+		if(userDao.findByEmail(email) != null) {
+			User user = userDao.findByEmail(email);
+			if(user.getUserName().equals(userModel.getUserName()) && userModel.getUserName() != null) {
+				user.setUserName(userModel.getUserName());
 			}
+			if(user.getFullName().equals(userModel.getFullName()) && userModel.getFullName() != null) {
+				user.setFullName(userModel.getFullName());
+			}
+			
 			userDao.saveAndFlush(user);
 			return true;
 		}	

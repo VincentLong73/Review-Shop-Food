@@ -43,11 +43,17 @@ public class Food implements Serializable{
 	@Column(name="content")
 	private String content;
 	
+	@Column(name="short_description")
+	private String shortDescription;
+	
 	@Column(name="price")
 	private float price;
 	
 	@Column(name="view")
 	private int view;
+	
+	@Column(name="rate")
+	private int rate;
 	
 	@Column(name="created_at")
 	private Date createdAt;
@@ -57,6 +63,8 @@ public class Food implements Serializable{
 	
 	@Column(name="is_delete")
 	private boolean isDelete;
+	
+	
 	
 	
 	@OneToMany(mappedBy = "food", cascade = CascadeType.ALL )

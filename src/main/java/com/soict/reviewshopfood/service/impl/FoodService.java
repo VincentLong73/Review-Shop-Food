@@ -188,4 +188,18 @@ public class FoodService implements IFoodService {
 		
 	}
 
+	@Override
+	public List<FoodModel> getListFoodByRate() throws SQLException {
+		List<Food> foods = foodDao.getFoodByOrderByRateAsc();
+		List<FoodModel> foodModels = getListFoodModel(foods);
+		return foodModels;
+	}
+
+	@Override
+	public List<FoodModel> getListFoodlastPost() throws SQLException {
+		List<Food> foods = foodDao.getFoodByCreatedAtAsc();
+		List<FoodModel> foodModels = getListFoodModel(foods);
+		return foodModels;
+	}
+
 }

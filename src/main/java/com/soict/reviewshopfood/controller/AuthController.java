@@ -36,19 +36,22 @@ public class AuthController {
 			MediaType.APPLICATION_FORM_URLENCODED_VALUE })
 	public ResponseEntity<Object> login(User user, HttpServletResponse response, HttpServletRequest request) {
 		HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
-		UserModel userModel = null;
+		String status = null;
 		try {
 			if (userService.checkLogin(user)) {
 				String result = jwtService.generateTokenLogin(user.getEmail());
 				Cookie jwt = utils.createCookie("Authorization", result, true, (long) 3600);
-				userModel = userService.findByEmailAfterLogin(user.getEmail());
+
 				response.addCookie(jwt);
 				httpStatus = HttpStatus.OK;
+				status = "Login successfully";
+			}else {
+				status = "Email or Password is wrong!";
 			}
 		} catch (Exception ex) {
 			System.out.println(ex.getMessage());
 		}
-		return new ResponseEntity<Object>(userModel, httpStatus);
+		return new ResponseEntity<Object>(status, httpStatus);
 	}
 
 	@GetMapping(value = "/logout")
