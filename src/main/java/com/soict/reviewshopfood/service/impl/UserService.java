@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -34,7 +33,6 @@ public class UserService implements IUserService, UserDetailsService {
 	private IUserDAO userDao;
 	@Autowired
 	private IRoleDAO roleDao;
-	
 	private final Path fileStorageLocation;
 	
 	@Autowired
@@ -51,6 +49,8 @@ public class UserService implements IUserService, UserDetailsService {
 //	@Autowired
 //	private JavaMailSender emailSender;
 
+	//	@Autowired
+//	private JavaMailSender emailSender;
 	@Override
 	public boolean addUser(UserModel userModel) {
 		User user = modelMapper.map(userModel, User.class);
@@ -85,7 +85,16 @@ public class UserService implements IUserService, UserDetailsService {
 				return false;
 			}
 		}
+	}
 
+	@Override
+	public void applyNewPassword(User user) {
+		User userUpdate = userDao.findByEmail(user.getEmail());
+		String passRandom = RandomStringUtils.randomAlphanumeric(8);
+		if (userUpdate != null) {
+			userUpdate.setPassword(passRandom);
+			userDao.save(userUpdate);
+		}
 	}
 //	@Override
 //	public void applyNewPassword(User user) {
@@ -132,7 +141,6 @@ public class UserService implements IUserService, UserDetailsService {
 		return userModel;
 	}
 
-	@Override
 	public void blockOrUnblockUser(int id, boolean active) throws SQLException {
 		if(userDao.existsById(id)) {
 			User user = userDao.getOne(id);
@@ -142,9 +150,19 @@ public class UserService implements IUserService, UserDetailsService {
 	}
 
 	@Override
+	public UserModel getUserByEmail(String email) {
+		UserModel userModel = new UserModel();
+		User user = userDao.findByEmail(email);
+		userModel = modelMapper.map(user, UserModel.class);
+		userModel.setPassword(null);
+		return userModel;
+	}
+
+
+	@Override
 	public UserModel findByEmailAfterLogin(String email) throws SQLException {
-		if(email != null) {
-			if(userDao.findByEmail(email) != null) {
+		if (email != null) {
+			if (userDao.findByEmail(email) != null) {
 				User userTmp = userDao.findByEmail(email);
 				UserModel userReturn = new UserModel();
 				userReturn.setId(userTmp.getId());

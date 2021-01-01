@@ -1,5 +1,6 @@
 package com.soict.reviewshopfood.controller;
 
+
 import java.sql.SQLException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,11 +28,15 @@ import com.soict.reviewshopfood.service.impl.UserService;
 
 @RestController
 @RequestMapping(value = "/api/user")
+
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+@RestController
+@RequestMapping(value = "/api/user")
 public class UserController {
 	@Autowired
 	private UserService userService;
 	@Autowired
+
 	private ImageAvatarService iImageAvatarService;
 	
 	//Lay thong tin user
@@ -50,6 +56,7 @@ public class UserController {
 			}
 		}
 		return new ResponseEntity<Object>(userModel, httpStatus);
+
 	}
 
 	// edit user
