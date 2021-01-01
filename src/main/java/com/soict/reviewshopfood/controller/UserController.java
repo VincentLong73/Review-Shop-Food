@@ -28,10 +28,7 @@ import com.soict.reviewshopfood.service.impl.UserService;
 
 @RestController
 @RequestMapping(value = "/api/user")
-
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
-@RestController
-@RequestMapping(value = "/api/user")
 public class UserController {
 	@Autowired
 	private UserService userService;
