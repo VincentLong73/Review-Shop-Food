@@ -7,6 +7,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -14,6 +16,7 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.soict.reviewshopfood.dao.IUserDAO;
 import com.soict.reviewshopfood.entity.User;
@@ -27,6 +30,8 @@ public class ImageAvatarService implements IImageAvatarService {
 
 	@Autowired
 	private IUserDAO userDao;
+	
+	final String startFileName = "avatar";
 
 	private final Path fileStorageLocation;
 
@@ -49,6 +54,9 @@ public class ImageAvatarService implements IImageAvatarService {
 			if (fileName.contains("..")) {
 				throw new FileStorageException("Sorry! Filenamecontains invalid path sequence" + fileName);
 			}
+			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+			String token = String.valueOf(timestamp.getTime());
+			fileName = startFileName+token.concat(fileName);
 			Path targetLocation = this.fileStorageLocation.resolve(fileName);
 			Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 		} catch (IOException e) {
@@ -57,33 +65,21 @@ public class ImageAvatarService implements IImageAvatarService {
 		
 		User user = userDao.findByEmail(email);
 		user.setImageUrl(fileName);
+		user.setUpdateAt(new Date());
 		userDao.saveAndFlush(user);
 		
 	}
-
-	@Override
-	public Resource getImageAvatar(int userId) throws SQLException {
-		try {
-			Path filePath = this.fileStorageLocation.resolve(userDao.getOne(userId).getImageUrl()).normalize();
-			Resource resource = new UrlResource(filePath.toUri());
-			if (resource.exists()) {
-				return resource;
-			} else {
-				throw new MyFileNotFoundException("File not found avatar !");
-			}
-
-		} catch (MalformedURLException e) {
-			throw new MyFileNotFoundException("File not found avatar !");
-		}
-	}
 	
 	@Override
-	public Resource getImageAvatarByEmail(String email) throws SQLException {
+	public String getImageAvatar(String email) throws SQLException {
 		try {
 			Path filePath = this.fileStorageLocation.resolve(userDao.findByEmail(email).getImageUrl()).normalize();
 			Resource resource = new UrlResource(filePath.toUri());
 			if (resource.exists()) {
-				return resource;
+				String imageUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
+						.path("/images/"+userDao.findByEmail(email).getImageUrl())
+						.toUriString();
+				return imageUrl;
 			} else {
 				throw new MyFileNotFoundException("File not found avatar !");
 			}
@@ -93,20 +89,5 @@ public class ImageAvatarService implements IImageAvatarService {
 		}
 	}
 
-	@Override
-	public Resource getImageAvatarByName(String imageUrl) throws SQLException {
-		try {
-			Path filePath = this.fileStorageLocation.resolve(imageUrl).normalize();
-			Resource resource = new UrlResource(filePath.toUri());
-			if (resource.exists()) {
-				return resource;
-			} else {
-				throw new MyFileNotFoundException("File not found avatar !");
-			}
-
-		} catch (MalformedURLException e) {
-			throw new MyFileNotFoundException("File not found avatar !");
-		}
-	}
 
 }

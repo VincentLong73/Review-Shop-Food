@@ -60,10 +60,9 @@ public class User implements Serializable{/**
 	@Column(name="created_at")
 	private Date createdAt;
 	
-	@Column(name="modified_date")
-	private Date modifiedDate;
-	@Column(name="avatar_url")
-	private String avatarUrl;
+	@Column(name="update_at")
+	private Date updateAt;
+
 	@Column(name="created_by")
 	private String createdBy;
 	

@@ -67,7 +67,7 @@ public class ShopService implements IShopService {
 		if(shopDao.existsById(shopModel.getId())) {
 			Shop shop = shopDao.getOne(shopModel.getId());
 			shop = modelMapper.map(shopModel, Shop.class);
-			shop.setUpdateDate(new Date());
+			shop.setUpdateAt(new Date());
 			addressService.editAddress(shopModel.getAddressModel());
 			shop.setAddress(addressDao.getOne(shopModel.getAddressModel().getId()));
 			shop.setUser(userDao.getOne(shopModel.getUserId()));
