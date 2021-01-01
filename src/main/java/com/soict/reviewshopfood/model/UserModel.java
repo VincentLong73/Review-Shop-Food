@@ -19,6 +19,7 @@ public class UserModel {
 	private String email;
 	private boolean active;
 	private Date createdAt;
+	private Date updateAt;
 	private String createdBy;
 	private String codeRole;
 	private int imageAvatarId;

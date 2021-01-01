@@ -60,6 +60,9 @@ public class User implements Serializable{/**
 	@Column(name="created_at")
 	private Date createdAt;
 	
+	@Column(name="update_at")
+	private Date updateAt;
+	
 	@Column(name="created_by")
 	private String createdBy;
 	

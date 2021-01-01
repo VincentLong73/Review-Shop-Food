@@ -46,6 +46,9 @@ public class Food implements Serializable{
 	@Column(name="short_description")
 	private String shortDescription;
 	
+	@Column(name="thumbnail")
+	private String thumbnail;
+	
 	@Column(name="price")
 	private float price;
 	
@@ -57,6 +60,9 @@ public class Food implements Serializable{
 	
 	@Column(name="created_at")
 	private Date createdAt;
+	
+	@Column(name="update_at")
+	private Date updateAt;
 	
 	@Column(name="created_by")
 	private String createdBy;

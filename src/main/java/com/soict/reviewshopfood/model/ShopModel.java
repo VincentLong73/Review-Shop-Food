@@ -17,7 +17,7 @@ public class ShopModel {
 	private int userId;
 	private Date createdAt;
 	private String createdBy;
-	private Date updateDate;
+	private Date updateAt;
 	private AddressModel addressModel;
 	private boolean isDelete;
 }

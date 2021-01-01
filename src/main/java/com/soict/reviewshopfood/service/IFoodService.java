@@ -13,7 +13,7 @@ public interface IFoodService {
 	List<FoodModel> getListFoodByRate() throws SQLException; 					// Lay cac mon an theo so luong view
 	List<FoodModel> getListFoodlastPost() throws SQLException; 					// Lay cac mon an theo so ngay dang
 	List<FoodModel> getListFood() throws SQLException; 							//Lay danh sach cac mon an;
-	void addFood(FoodModel foodModel) throws SQLException; 						//Them mon an vao shop;
+	boolean addFood(FoodModel foodModel) throws SQLException; 						//Them mon an vao shop;
 	void editFood(FoodModel foodModel) throws SQLException; 					//Sua thong tin cua mon an;
 	List<FoodModel> getFoodByShopId(int shopId) throws SQLException; 			//Lay danh sach mon an theo shopId;
 	List<FoodModel> getListFoodByNameFood(String nameFood) throws SQLException; //Lay danh sach mon an theo ten
