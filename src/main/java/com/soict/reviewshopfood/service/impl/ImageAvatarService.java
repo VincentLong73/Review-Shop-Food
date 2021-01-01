@@ -69,7 +69,14 @@ public class ImageAvatarService implements IImageAvatarService {
 		userDao.saveAndFlush(user);
 		
 	}
-	
+
+	public void saveFile(String name, String email){
+		User user = userDao.findByEmail(email);
+		user.setImageUrl(name);
+		user.setUpdateAt(new Date());
+		userDao.saveAndFlush(user);
+	}
+
 	@Override
 	public String getImageAvatar(String email) throws SQLException {
 		try {

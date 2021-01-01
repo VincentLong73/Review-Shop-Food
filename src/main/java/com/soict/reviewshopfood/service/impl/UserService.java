@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import org.apache.commons.lang.RandomStringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -156,6 +158,11 @@ public class UserService implements IUserService, UserDetailsService {
 		userModel = modelMapper.map(user, UserModel.class);
 		userModel.setPassword(null);
 		return userModel;
+	}
+
+	@Override
+	public void updateUser(User user) {
+
 	}
 
 
