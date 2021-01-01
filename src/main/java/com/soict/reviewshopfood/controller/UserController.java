@@ -153,7 +153,7 @@ public class UserController {
 			Path path = Paths.get("uploads/avatar/");
 			InputStream inputStream = file.getInputStream();
 			Files.copy(inputStream, path.resolve(fileName), StandardCopyOption.REPLACE_EXISTING);
-			iImageAvatarService.saveFile(file.getOriginalFilename(), auth.getName());
+			iImageAvatarService.saveFile(fileName, auth.getName());
 			urlImage = "http://localhost:9091/api/user/avatar/".concat(fileName);
 			httpStatus = HttpStatus.OK;
 		} catch (Exception e) {
