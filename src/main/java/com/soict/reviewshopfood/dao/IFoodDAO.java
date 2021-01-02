@@ -18,6 +18,7 @@ public interface IFoodDAO extends JpaRepository<Food, Integer> {
 	List<Food> getFoodByShopId(int shopId);
 	List<Food> getFoodByShopIdAndIsDelete(int shopId,boolean isDelete);
 	List<Food> getListFoodByNameContaining(String nameFood);
+	Food getFoodById(int id);
 	List<Food> getListFoodByNameContainingAndIsDelete(String nameFood,boolean isDelete);
 	@Query("select food from Food food where food.isDelete = false order by food.view")
 	List<Food> getFoodByOrderByViewAsc();

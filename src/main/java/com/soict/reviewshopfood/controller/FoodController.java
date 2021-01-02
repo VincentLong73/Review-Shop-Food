@@ -1,25 +1,31 @@
 package com.soict.reviewshopfood.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.soict.reviewshopfood.entity.Food;
+import com.soict.reviewshopfood.entity.Shop;
+import com.soict.reviewshopfood.entity.User;
+import com.soict.reviewshopfood.model.FoodModel;
+import com.soict.reviewshopfood.model.FormNewFood;
+import com.soict.reviewshopfood.service.impl.FoodService;
+import com.soict.reviewshopfood.service.impl.ImageFoodService;
+import com.soict.reviewshopfood.service.impl.ShopService;
+import com.soict.reviewshopfood.service.impl.UserService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.soict.reviewshopfood.model.FoodModel;
-import com.soict.reviewshopfood.service.impl.FoodService;
-import com.soict.reviewshopfood.service.impl.ImageFoodService;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/food")
@@ -30,6 +36,12 @@ public class FoodController {
 	private FoodService foodService;
 	@Autowired
 	private ImageFoodService imageFoodService;
+	@Autowired
+	private UserService userService;
+	@Autowired
+	private ShopService shopService;
+	@Autowired
+	private ModelMapper modelMapper;
 
 	// lay mon an theo id va con ban
 	@RequestMapping(value = "/getFood/{id}")
@@ -148,7 +160,7 @@ public class FoodController {
 																				, MediaType.MULTIPART_FORM_DATA_VALUE})
 	public ResponseEntity<Object> addFood(FoodModel foodModel) {
 		HttpStatus httpStatus = null;
-		
+
 		try {
 			if(foodService.addFood(foodModel)) {
 				httpStatus = HttpStatus.OK;
@@ -162,7 +174,7 @@ public class FoodController {
 
 		return new ResponseEntity<Object>(httpStatus);
 	}
-	
+
 	//Them anh cho mon an theo foodId
 	@PostMapping("/uploadImageFood/{foodId}")
 	public ResponseEntity<Object> uploadMultiFiles(@RequestParam("files") MultipartFile files[],
@@ -194,4 +206,42 @@ public class FoodController {
 		return new ResponseEntity<Object>(httpStatus);
 	}
 
+	@PostMapping(value = "/createNewFood", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+	public ResponseEntity<Object> uploadImageAvatar(@RequestParam("thumbnail") MultipartFile thumbnail, @RequestParam("foodImages") MultipartFile[] foodImages, FormNewFood formNewFood) throws SQLException {
+		HttpStatus httpStatus = HttpStatus.FORBIDDEN;
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Food food = null;
+		FoodModel foodModel = null;
+		if (auth.isAuthenticated()) {
+			User user = userService.findByEmail(auth.getName());
+			if (user.getRole().getCode().equals("ROLE_SHOP")) {
+				try {
+					Shop shop = shopService.findShopByUserId(user.getId());
+					food = foodService.saveNewFood(thumbnail, foodImages, formNewFood, shop);
+					httpStatus = HttpStatus.CREATED;
+					foodModel = foodService.getFoodByIdAndActive(food.getId());
+					if (foodModel != null) {
+						foodModel.setView(foodModel.getView());
+					}
+				} catch (Exception e) {
+					System.out.println(e.getMessage());
+				}
+			}
+		}
+		return new ResponseEntity<Object>(foodModel, httpStatus);
+	}
+	@GetMapping("/foodImage/{photo}")
+	public ResponseEntity<Object> getImageAvatar1(@PathVariable("photo") String photo) throws SQLException {
+		HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+		try {
+			Path filename = Paths.get("uploads/foods/", photo);
+			byte[] buffer = Files.readAllBytes(filename);
+			ByteArrayResource byteArrayResource = new ByteArrayResource(buffer);
+			return ResponseEntity.ok().contentLength(buffer.length).contentType(MediaType.valueOf(MediaType.IMAGE_JPEG_VALUE)).body(byteArrayResource);
+		} catch (Exception e) {
+			System.out.println(e);
+			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+		}
+		return new ResponseEntity<Object>(httpStatus);
+	}
 }
