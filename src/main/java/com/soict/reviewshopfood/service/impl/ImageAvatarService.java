@@ -58,6 +58,7 @@ public class ImageAvatarService implements IImageAvatarService {
 			String token = String.valueOf(timestamp.getTime());
 			fileName = startFileName+token.concat(fileName);
 			Path targetLocation = this.fileStorageLocation.resolve(fileName);
+			//Path targetLocation = Paths.get("images/avatar/").resolve(fileName);
 			Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 		} catch (IOException e) {
 			throw new FileStorageException("Could not store file " + fileName + ". Please try again!", e);
@@ -74,6 +75,7 @@ public class ImageAvatarService implements IImageAvatarService {
 	public String getImageAvatar(String email) throws SQLException {
 		try {
 			Path filePath = this.fileStorageLocation.resolve(userDao.findByEmail(email).getImageUrl()).normalize();
+			//Path filePath = Paths.get("images/avatar/").resolve(userDao.findByEmail(email).getImageUrl()).normalize();
 			Resource resource = new UrlResource(filePath.toUri());
 			if (resource.exists()) {
 				String imageUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -88,6 +90,17 @@ public class ImageAvatarService implements IImageAvatarService {
 			throw new MyFileNotFoundException("File not found avatar !");
 		}
 	}
+	public void saveFile(String name, String email){
+		User user = userDao.findByEmail(email);
+		user.setImageUrl(name);
+		user.setUpdateAt(new Date());
+		userDao.saveAndFlush(user);
+	}
 
+	@Override
+	public String getImageAvatar1(String email) throws SQLException {
+		
+		return userDao.findByEmail(email).getImageUrl();
+	}
 
 }

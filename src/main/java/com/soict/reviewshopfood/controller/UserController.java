@@ -139,4 +139,42 @@ public class UserController {
 			}
 			return new ResponseEntity<Object>(userModel, httpStatus);
 		}
+		
+//		@PostMapping(value = "/uploadImageAvatar")
+//		public ResponseEntity<String> uploadImageAvatar(@RequestParam("file") MultipartFile file) throws SQLException {
+//			HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+//			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//			String urlImage = "";
+//			try {
+//				Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+//				String token = String.valueOf(timestamp.getTime());
+//				String fileName = token.concat(Objects.requireNonNull(file.getOriginalFilename()));
+//				Path path = Paths.get("uploads/avatar/");
+//				InputStream inputStream = file.getInputStream();
+//				Files.copy(inputStream, path.resolve(fileName), StandardCopyOption.REPLACE_EXISTING);
+//				iImageAvatarService.saveFile(fileName, auth.getName());
+//				urlImage = fileName;
+//				httpStatus = HttpStatus.OK;
+//			} catch (Exception e) {
+//				e.getStackTrace();
+//			}
+//
+//			return new ResponseEntity<String>(urlImage, httpStatus);
+//		}
+//
+//		@GetMapping("/avatar")
+//		public ResponseEntity<Object> getImageAvatar1() throws SQLException {
+//			HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+//			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//			try {
+//				Path filename = Paths.get("uploads/avatar/", iImageAvatarService.getImageAvatar1(auth.getName()));
+//				byte[] buffer = Files.readAllBytes(filename);
+//				ByteArrayResource byteArrayResource = new ByteArrayResource(buffer);
+//				return ResponseEntity.ok().contentLength(buffer.length).contentType(MediaType.valueOf(MediaType.IMAGE_JPEG_VALUE)).body(byteArrayResource);
+//			} catch (Exception e) {
+//				System.out.println(e);
+//				httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+//			}
+//			return new ResponseEntity<Object>(httpStatus);
+//		}
 }
