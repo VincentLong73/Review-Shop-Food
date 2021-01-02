@@ -66,7 +66,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
 		
-//		http.csrf().disable();
+//		httpSecurity.csrf().disable();
 //		http.authorizeRequests().antMatchers("/aims/login","/aims/logout","/aims/editProduct/*","/aims/deleteProduct/*","/users/*").permitAll();
 		httpSecurity.authorizeRequests().antMatchers("/api/auth/**").permitAll();
 		httpSecurity.cors().disable();
@@ -82,9 +82,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 				.antMatchers(HttpMethod.POST,"/api/image/uploadImageFood/**").access("hasRole('ROLE_SHOP')")
 				
 				.antMatchers(HttpMethod.GET,"/api/food/**").permitAll()
-				.antMatchers(HttpMethod.POST,"/api/food/**").access("hasRole('ROLE_SHOP')")
-				.antMatchers(HttpMethod.PUT,"/api/food/**").access("hasRole('ROLE_SHOP')")
-				.antMatchers(HttpMethod.DELETE,"/api/food/**").access("hasRole('ROLE_SHOP')")
+				.antMatchers(HttpMethod.POST,"/api/food/**").permitAll()
+				.antMatchers(HttpMethod.PUT,"/api/food/**").permitAll()
+				.antMatchers(HttpMethod.DELETE,"/api/food/**").permitAll()
 				
 				.antMatchers(HttpMethod.GET,"/api/comment/**").permitAll()
 				.antMatchers(HttpMethod.POST,"/api/comment/**").access("hasRole('ROLE_CUSTOMER')")

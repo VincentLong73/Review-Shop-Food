@@ -1,6 +1,7 @@
 package com.soict.reviewshopfood.service.impl;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -10,7 +11,10 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
+import com.soict.reviewshopfood.entity.Shop;
+import com.soict.reviewshopfood.model.FormNewFood;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -227,7 +231,7 @@ public class FoodService implements IFoodService {
 		List<ImageFood> listImageFood = imageFoodDao.findByFoodId(foodId);
 		for (ImageFood image : listImageFood) {
 			String imageUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
-					.path("/images/" + image.getImageUrl()).toUriString();
+					.path("/api/food/foodImage/" + image.getImageUrl()).toUriString();
 			listImageFoodUrl.add(imageUrl);
 		}
 		return listImageFoodUrl;
@@ -261,7 +265,7 @@ public class FoodService implements IFoodService {
 			foodModel.setView(food.getView());
 			foodModel.setShopId(food.getShop().getId());
 			String thumbnail = ServletUriComponentsBuilder.fromCurrentContextPath()
-					.path("/images/" + food.getThumbnail()).toUriString();
+					.path("/api/food/foodImage/" + food.getThumbnail()).toUriString();
 			foodModel.setThumbnail(thumbnail);
 			foodModel.setListImageFoodUrl(getListImageFoodUrl(food.getId()));
 			int sumRate = 0;
@@ -311,5 +315,35 @@ public class FoodService implements IFoodService {
 		}
 		return fileName;
 	}
+	public Food getFoodById(int id){
+		return foodDao.getFoodById(id);
+	}
+	public Food saveNewFood(MultipartFile thumbnail, MultipartFile[] foodImages, FormNewFood formNewFood, Shop shop) throws IOException {
+		Food food = new Food();
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		String token = String.valueOf(timestamp.getTime());
+		String fileName = token.concat(Objects.requireNonNull(thumbnail.getOriginalFilename()));
+		Path path = Paths.get("uploads/foods/");
+		InputStream inputStream = thumbnail.getInputStream();
+		Files.copy(inputStream, path.resolve(fileName), StandardCopyOption.REPLACE_EXISTING);
+		food.setThumbnail(fileName);
+		food.setContent(formNewFood.getContent());
+		food.setName(formNewFood.getName());
+		food.setShortDescription(formNewFood.getShortDescription());
+		food.setPrice(formNewFood.getPrice());
+		food.setShop(shop);
+		food = foodDao.save(food);
 
+		for(int i = 0; i<foodImages.length; i++){
+			ImageFood imageFood = new ImageFood();
+			token = String.valueOf(timestamp.getTime());
+			fileName = token.concat(Objects.requireNonNull(foodImages[i].getOriginalFilename()));
+			inputStream = foodImages[i].getInputStream();
+			Files.copy(inputStream, path.resolve(fileName), StandardCopyOption.REPLACE_EXISTING);
+			imageFood.setImageUrl(fileName);
+			imageFood.setFood(food);
+			imageFoodDao.save(imageFood);
+		}
+		return food;
+	}
 }

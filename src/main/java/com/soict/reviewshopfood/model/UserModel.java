@@ -22,7 +22,5 @@ public class UserModel {
 	private Date updateAt;
 	private String createdBy;
 	private String codeRole;
-	private int imageAvatarId;
-	private String avatarUrl;
-	private MultipartFile file;
+	private String imageUrl;
 }

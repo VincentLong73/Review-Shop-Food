@@ -1,16 +1,14 @@
 package com.soict.reviewshopfood.service.impl;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.soict.reviewshopfood.dao.IFoodDAO;
+import com.soict.reviewshopfood.dao.IImageFoodDAO;
+import com.soict.reviewshopfood.entity.Food;
+import com.soict.reviewshopfood.entity.ImageFood;
+import com.soict.reviewshopfood.exception.FileStorageException;
+import com.soict.reviewshopfood.exception.MyFileNotFoundException;
+import com.soict.reviewshopfood.model.FormNewFood;
+import com.soict.reviewshopfood.properties.FileStorageProperties;
+import com.soict.reviewshopfood.service.IImageFoodService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -19,13 +17,16 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.soict.reviewshopfood.dao.IFoodDAO;
-import com.soict.reviewshopfood.dao.IImageFoodDAO;
-import com.soict.reviewshopfood.entity.ImageFood;
-import com.soict.reviewshopfood.exception.FileStorageException;
-import com.soict.reviewshopfood.exception.MyFileNotFoundException;
-import com.soict.reviewshopfood.properties.FileStorageProperties;
-import com.soict.reviewshopfood.service.IImageFoodService;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.*;
 
 @Service
 public class ImageFoodService implements IImageFoodService{
@@ -118,19 +119,18 @@ public class ImageFoodService implements IImageFoodService{
 	}
 	@Override
 	public Resource getThumbnailFood(String thumbnail) throws SQLException {
-		System.out.println(this.fileStorageLocation.toUri()+thumbnail);
+		System.out.println(this.fileStorageLocation.toUri() + thumbnail);
 		try {
 			Path filePath = this.fileStorageLocation.resolve(thumbnail).normalize();
 			Resource resource = new UrlResource(filePath.toUri());
-			if(resource.exists()) {
+			if (resource.exists()) {
 				return resource;
-			}else {
+			} else {
 				throw new MyFileNotFoundException("File not found avatar !");
 			}
-			
-		}catch(MalformedURLException e) {
+
+		} catch (MalformedURLException e) {
 			throw new MyFileNotFoundException("File not found avatar !");
 		}
 	}
-
 }

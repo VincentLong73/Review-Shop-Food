@@ -25,6 +25,7 @@ import com.soict.reviewshopfood.exception.FileStorageException;
 import com.soict.reviewshopfood.model.UserModel;
 import com.soict.reviewshopfood.properties.FileStorageProperties;
 import com.soict.reviewshopfood.service.IUserService;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @Service
 public class UserService implements IUserService, UserDetailsService {
@@ -136,7 +137,7 @@ public class UserService implements IUserService, UserDetailsService {
 		if (userDao.existsById(id)) {
 			User user = userDao.getOne(id);
 			userModel = modelMapper.map(user, UserModel.class);
-			userModel.setAvatarUrl(user.getImageUrl());
+			userModel.setImageUrl(user.getImageUrl());
 			userModel.setPassword(null);
 			
 		}
@@ -157,12 +158,18 @@ public class UserService implements IUserService, UserDetailsService {
 		User user = userDao.findByEmail(email);
 		userModel = modelMapper.map(user, UserModel.class);
 		userModel.setPassword(null);
+		userModel.setImageUrl(ServletUriComponentsBuilder.fromCurrentContextPath()
+				.path("/api/user/avatar/" +user.getImageUrl()).toUriString());
 		return userModel;
 	}
 
 	@Override
 	public void updateUser(User user) {
-
+		User userfind = userDao.findByEmail(user.getEmail());
+		userfind.setFullName(user.getFullName());
+		userfind.setUserName(user.getUserName());
+		userfind.setPassword(user.getPassword());
+		userDao.save(userfind);
 	}
 
 
