@@ -14,5 +14,5 @@ import com.soict.reviewshopfood.entity.Shop;
 public interface IShopDAO extends JpaRepository<Shop, Integer> {
 	
 	List<Shop> findShopByNameShopContaining(String nameShop);
-
+	Shop findShopByUserId(int userId);
 }

@@ -10,8 +10,8 @@ import com.soict.reviewshopfood.model.FoodModel;
 @Service
 public interface IFoodService {
 	
-	List<FoodModel> getListFoodByRate() throws SQLException; 					// Lay cac mon an theo so luong view
-	List<FoodModel> getListFoodlastPost() throws SQLException; 					// Lay cac mon an theo so ngay dang
+	List<FoodModel> getListFoodByRate() throws SQLException; 					// Lay cac mon an theo so luong rating
+	List<FoodModel> getFoodByCreatedAtDesc() throws SQLException; 					// Lay cac mon an theo so ngay dang
 	List<FoodModel> getListFood() throws SQLException; 							//Lay danh sach cac mon an;
 	boolean addFood(FoodModel foodModel) throws SQLException; 						//Them mon an vao shop;
 	void editFood(FoodModel foodModel) throws SQLException; 					//Sua thong tin cua mon an;

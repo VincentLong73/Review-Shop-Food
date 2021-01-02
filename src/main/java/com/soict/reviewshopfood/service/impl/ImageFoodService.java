@@ -118,19 +118,18 @@ public class ImageFoodService implements IImageFoodService{
 	}
 	@Override
 	public Resource getThumbnailFood(String thumbnail) throws SQLException {
-		System.out.println(this.fileStorageLocation.toUri()+thumbnail);
+		System.out.println(this.fileStorageLocation.toUri() + thumbnail);
 		try {
 			Path filePath = this.fileStorageLocation.resolve(thumbnail).normalize();
 			Resource resource = new UrlResource(filePath.toUri());
-			if(resource.exists()) {
+			if (resource.exists()) {
 				return resource;
-			}else {
+			} else {
 				throw new MyFileNotFoundException("File not found avatar !");
 			}
-			
-		}catch(MalformedURLException e) {
+
+		} catch (MalformedURLException e) {
 			throw new MyFileNotFoundException("File not found avatar !");
 		}
 	}
-
 }

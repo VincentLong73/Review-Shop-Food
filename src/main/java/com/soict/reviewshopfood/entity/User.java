@@ -62,10 +62,9 @@ public class User implements Serializable{/**
 	
 	@Column(name="update_at")
 	private Date updateAt;
-	
+
 	@Column(name="created_by")
 	private String createdBy;
-	
 	
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 	@EqualsAndHashCode.Exclude

@@ -116,4 +116,8 @@ public class ShopService implements IShopService {
 		return shopModels;
 	}
 
+	public Shop findShopByUserId(int userId) {
+		return shopDao.findShopByUserId(userId);
+	}
+
 }

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.RandomStringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -16,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.soict.reviewshopfood.dao.IRoleDAO;
 import com.soict.reviewshopfood.dao.IUserDAO;
@@ -34,7 +36,6 @@ public class UserService implements IUserService, UserDetailsService {
 	private IUserDAO userDao;
 	@Autowired
 	private IRoleDAO roleDao;
-	
 	private final Path fileStorageLocation;
 	
 	@Autowired
@@ -51,6 +52,8 @@ public class UserService implements IUserService, UserDetailsService {
 //	@Autowired
 //	private JavaMailSender emailSender;
 
+	//	@Autowired
+//	private JavaMailSender emailSender;
 	@Override
 	public boolean addUser(UserModel userModel) {
 		User user = modelMapper.map(userModel, User.class);
@@ -85,7 +88,16 @@ public class UserService implements IUserService, UserDetailsService {
 				return false;
 			}
 		}
+	}
 
+	@Override
+	public void applyNewPassword(User user) {
+		User userUpdate = userDao.findByEmail(user.getEmail());
+		String passRandom = RandomStringUtils.randomAlphanumeric(8);
+		if (userUpdate != null) {
+			userUpdate.setPassword(passRandom);
+			userDao.save(userUpdate);
+		}
 	}
 //	@Override
 //	public void applyNewPassword(User user) {
@@ -125,14 +137,13 @@ public class UserService implements IUserService, UserDetailsService {
 		if (userDao.existsById(id)) {
 			User user = userDao.getOne(id);
 			userModel = modelMapper.map(user, UserModel.class);
-			userModel.setAvatarUrl(user.getImageUrl());
+			userModel.setImageUrl(user.getImageUrl());
 			userModel.setPassword(null);
 			
 		}
 		return userModel;
 	}
 
-	@Override
 	public void blockOrUnblockUser(int id, boolean active) throws SQLException {
 		if(userDao.existsById(id)) {
 			User user = userDao.getOne(id);
@@ -142,9 +153,30 @@ public class UserService implements IUserService, UserDetailsService {
 	}
 
 	@Override
+	public UserModel getUserByEmail(String email) {
+		UserModel userModel = new UserModel();
+		User user = userDao.findByEmail(email);
+		userModel = modelMapper.map(user, UserModel.class);
+		userModel.setPassword(null);
+		userModel.setImageUrl(ServletUriComponentsBuilder.fromCurrentContextPath()
+				.path("/api/user/avatar/" +user.getImageUrl()).toUriString());
+		return userModel;
+	}
+
+	@Override
+	public void updateUser(User user) {
+		User userfind = userDao.findByEmail(user.getEmail());
+		userfind.setFullName(user.getFullName());
+		userfind.setUserName(user.getUserName());
+		userfind.setPassword(user.getPassword());
+		userDao.save(userfind);
+	}
+
+
+	@Override
 	public UserModel findByEmailAfterLogin(String email) throws SQLException {
-		if(email != null) {
-			if(userDao.findByEmail(email) != null) {
+		if (email != null) {
+			if (userDao.findByEmail(email) != null) {
 				User userTmp = userDao.findByEmail(email);
 				UserModel userReturn = new UserModel();
 				userReturn.setId(userTmp.getId());
