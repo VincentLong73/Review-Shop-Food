@@ -16,13 +16,6 @@ import com.soict.reviewshopfood.properties.FileStorageProperties;
 })
 public class ReviewShopFoodApplication{
 	
-	// extends WebMvcConfigurationSupport
-//	@Override
-//	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-//		//register recource handler for images
-//		registry.addResourceHandler("/**").addResourceLocations("classpath:/static/")
-//				.setCacheControl(CacheControl.maxAge(2,TimeUnit.HOURS).cachePublic());
-//	}
 	public static void main(String[] args) {
 		SpringApplication.run(ReviewShopFoodApplication.class, args);
 	}

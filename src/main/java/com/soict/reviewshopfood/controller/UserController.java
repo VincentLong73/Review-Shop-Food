@@ -80,42 +80,6 @@ public class UserController {
 		return new ResponseEntity<String>(httpStatus);
 	}
 
-	// upload anh avatar
-//	@PostMapping("/uploadImageAvatar")
-//	public ResponseEntity<String> uploadImageAvatar(@RequestParam("file") MultipartFile file) throws SQLException {
-//
-//		HttpStatus httpStatus = null;
-//		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//		try {
-//			iImageAvatarService.storeFileImageAvatar(file, auth.getName());
-//			httpStatus = HttpStatus.OK;
-//		} catch (Exception e) {
-//			System.out.println(e);
-//			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-//		}
-//
-//		String imageUrl = iImageAvatarService.getImageAvatar(auth.getName());
-//
-//		return new ResponseEntity<String>(imageUrl,httpStatus);
-//	}
-
-	// lay anh tra ve fileName
-//	@GetMapping("/getImageAvatar")
-//	public ResponseEntity<Object> getImageAvatar1(HttpServletRequest request) throws SQLException {
-//		String imageUrl = null;
-//		HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-//		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//		try {
-//			imageUrl = iImageAvatarService.getImageAvatar(auth.getName());
-//			httpStatus = HttpStatus.OK;
-//		} catch (Exception e) {
-//			System.out.println(e);
-//			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-//		}
-//
-//		return new  ResponseEntity<Object>(imageUrl,httpStatus);
-//	}
-
 //	@Autowired
 //	private UserService userService;
 	// Cap nhat lai password
@@ -170,11 +134,12 @@ public class UserController {
 		return new ResponseEntity<String>(urlImage, httpStatus);
 	}
 
-	@GetMapping("/avatar/{photo}")
-	public ResponseEntity<Object> getImageAvatar1(@PathVariable("photo") String photo) throws SQLException {
+	@GetMapping("/avatar")
+	public ResponseEntity<Object> getImageAvatar1() throws SQLException {
 		HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		try {
-			Path filename = Paths.get("uploads/avatar/", photo);
+			Path filename = Paths.get("uploads/avatar/", userService.findByEmail(auth.getName()).getImageUrl());
 			byte[] buffer = Files.readAllBytes(filename);
 			ByteArrayResource byteArrayResource = new ByteArrayResource(buffer);
 			return ResponseEntity.ok().contentLength(buffer.length).contentType(MediaType.valueOf(MediaType.IMAGE_JPEG_VALUE)).body(byteArrayResource);
@@ -198,6 +163,7 @@ public class UserController {
 		} catch (Exception e) {
 			e.getStackTrace();
 		}
+
 		return new ResponseEntity<Object>(userModel, httpStatus);
 	}
 }

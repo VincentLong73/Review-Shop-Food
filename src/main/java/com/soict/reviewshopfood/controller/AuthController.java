@@ -1,11 +1,9 @@
 package com.soict.reviewshopfood.controller;
 
-import com.soict.reviewshopfood.entity.User;
-import com.soict.reviewshopfood.helper.Utils;
-import com.soict.reviewshopfood.jwt.JwtService;
-import com.soict.reviewshopfood.model.UserModel;
-import com.soict.reviewshopfood.service.impl.UserService;
-import org.apache.commons.lang.ArrayUtils;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,13 +11,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.Arrays;
-import java.util.Collection;
+import com.soict.reviewshopfood.entity.User;
+import com.soict.reviewshopfood.helper.Utils;
+import com.soict.reviewshopfood.jwt.JwtService;
+import com.soict.reviewshopfood.model.UserModel;
+import com.soict.reviewshopfood.service.impl.UserService;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")

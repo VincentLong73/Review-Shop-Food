@@ -17,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.soict.reviewshopfood.dao.IRoleDAO;
 import com.soict.reviewshopfood.dao.IUserDAO;
@@ -25,7 +26,6 @@ import com.soict.reviewshopfood.exception.FileStorageException;
 import com.soict.reviewshopfood.model.UserModel;
 import com.soict.reviewshopfood.properties.FileStorageProperties;
 import com.soict.reviewshopfood.service.IUserService;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @Service
 public class UserService implements IUserService, UserDetailsService {

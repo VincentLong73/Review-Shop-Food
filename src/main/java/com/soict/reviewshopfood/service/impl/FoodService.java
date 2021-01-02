@@ -291,8 +291,8 @@ public class FoodService implements IFoodService {
 
 	//Lay mon an dang gan nhat
 	@Override
-	public List<FoodModel> getListFoodlastPost() throws SQLException {
-		List<Food> foods = foodDao.getFoodByCreatedAtAsc();
+	public List<FoodModel> getFoodByCreatedAtDesc() throws SQLException {
+		List<Food> foods = foodDao.getFoodByCreatedAtDesc();
 		List<FoodModel> foodModels = getListFoodModel(foods);
 		return foodModels;
 	}

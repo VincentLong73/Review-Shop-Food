@@ -1,5 +1,30 @@
 package com.soict.reviewshopfood.controller;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.soict.reviewshopfood.entity.Food;
 import com.soict.reviewshopfood.entity.Shop;
 import com.soict.reviewshopfood.entity.User;
@@ -9,23 +34,6 @@ import com.soict.reviewshopfood.service.impl.FoodService;
 import com.soict.reviewshopfood.service.impl.ImageFoodService;
 import com.soict.reviewshopfood.service.impl.ShopService;
 import com.soict.reviewshopfood.service.impl.UserService;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/food")
@@ -40,8 +48,6 @@ public class FoodController {
 	private UserService userService;
 	@Autowired
 	private ShopService shopService;
-	@Autowired
-	private ModelMapper modelMapper;
 
 	// lay mon an theo id va con ban
 	@RequestMapping(value = "/getFood/{id}")
@@ -110,7 +116,7 @@ public class FoodController {
 		return new ResponseEntity<Object>(foodModels, httpStatus);
 	}
 
-	// lay cac mon an con actice theo so luong view
+	// lay cac mon an con actice theo so luong view, lay gioi han 20 mon
 	@RequestMapping(value = "/getFoodByOrderByViewAscAndIsDelete")
 	public ResponseEntity<Object> getFoodByOrderByViewAscAndActive() {
 		HttpStatus httpStatus = null;
@@ -125,7 +131,7 @@ public class FoodController {
 		return new ResponseEntity<Object>(foodModels, httpStatus);
 	}
 
-	// lay cac mon an con actice theo rating
+	// lay cac mon an con actice theo rating ,lay gioi han 20 mon
 	@GetMapping(value = "/getFoodByOrderByRateDesc")
 	public ResponseEntity<Object> getFoodByOrderByRateDesc() {
 		HttpStatus httpStatus = null;
@@ -140,13 +146,13 @@ public class FoodController {
 		return new ResponseEntity<Object>(foodModels, httpStatus);
 	}
 
-	// lay cac mon an con actice theo ngay dang
-	@RequestMapping(value = "/getFoodByCreatedAtAsc")
-	public ResponseEntity<Object> getFoodByCreatedAtAsc() {
+	// lay cac mon an con actice theo ngay dang , lay gioi han 20 mon
+	@RequestMapping(value = "/getFoodByCreatedAtDesc")
+	public ResponseEntity<Object> getFoodByCreatedAtDesc() {
 		HttpStatus httpStatus = null;
 		List<FoodModel> foodModels = new ArrayList<FoodModel>();
 		try {
-			foodModels = foodService.getListFoodlastPost();
+			foodModels = foodService.getFoodByCreatedAtDesc();
 			httpStatus = HttpStatus.OK;
 		} catch (Exception e) {
 			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -206,8 +212,9 @@ public class FoodController {
 		return new ResponseEntity<Object>(httpStatus);
 	}
 
+	//Them mon an moi
 	@PostMapping(value = "/createNewFood", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-	public ResponseEntity<Object> uploadImageAvatar(@RequestParam("thumbnail") MultipartFile thumbnail, @RequestParam("foodImages") MultipartFile[] foodImages, FormNewFood formNewFood) throws SQLException {
+	public ResponseEntity<Object> uploadFoodThumbnail(@RequestParam("thumbnail") MultipartFile thumbnail, @RequestParam("foodImages") MultipartFile[] foodImages, FormNewFood formNewFood) throws SQLException {
 		HttpStatus httpStatus = HttpStatus.FORBIDDEN;
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Food food = null;
