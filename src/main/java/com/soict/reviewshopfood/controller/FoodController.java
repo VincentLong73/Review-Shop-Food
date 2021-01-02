@@ -126,12 +126,12 @@ public class FoodController {
 	}
 
 	// lay cac mon an con actice theo rating
-	@RequestMapping(value = "/getFoodByOrderByRateAsc")
-	public ResponseEntity<Object> getFoodByOrderByRateAsc() {
+	@GetMapping(value = "/getFoodByOrderByRateDesc")
+	public ResponseEntity<Object> getFoodByOrderByRateDesc() {
 		HttpStatus httpStatus = null;
 		List<FoodModel> foodModels = new ArrayList<FoodModel>();
 		try {
-			foodModels = foodService.getFoodByView();
+			foodModels = foodService.getListFoodByRate();
 			httpStatus = HttpStatus.OK;
 		} catch (Exception e) {
 			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -146,7 +146,7 @@ public class FoodController {
 		HttpStatus httpStatus = null;
 		List<FoodModel> foodModels = new ArrayList<FoodModel>();
 		try {
-			foodModels = foodService.getFoodByView();
+			foodModels = foodService.getListFoodlastPost();
 			httpStatus = HttpStatus.OK;
 		} catch (Exception e) {
 			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;

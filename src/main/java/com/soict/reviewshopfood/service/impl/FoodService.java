@@ -184,7 +184,7 @@ public class FoodService implements IFoodService {
 	//Lay mon an theo luot view nhieu nhat
 	@Override
 	public List<FoodModel> getFoodByView() throws SQLException {
-		List<Food> foods = foodDao.getFoodByOrderByViewAsc();
+		List<Food> foods = foodDao.getFoodByOrderByViewDesc();
 		List<FoodModel> foodModels = getListFoodModel(foods);
 		return foodModels;
 	}
@@ -218,7 +218,7 @@ public class FoodService implements IFoodService {
 				sumRate = sumRate + comment.getRate();
 			}
 			// Tinh rating tu cac diem rate cua food
-			foodModel.setRating((double) Math.round(((double) sumRate / listComment.size()) * 10) / 10);
+			foodModel.setRating(food.getRate());
 
 			foodModels.add(foodModel);
 		}
@@ -284,7 +284,7 @@ public class FoodService implements IFoodService {
 	//lay mon an theo rating
 	@Override
 	public List<FoodModel> getListFoodByRate() throws SQLException {
-		List<Food> foods = foodDao.getFoodByOrderByRateAsc();
+		List<Food> foods = foodDao.getFoodByOrderByRateDesc();
 		List<FoodModel> foodModels = getListFoodModel(foods);
 		return foodModels;
 	}
@@ -346,4 +346,5 @@ public class FoodService implements IFoodService {
 		}
 		return food;
 	}
+
 }
