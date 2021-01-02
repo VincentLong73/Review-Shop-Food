@@ -41,15 +41,15 @@ public class AuthController {
 			if (userService.checkLogin(user)) {
 				String result = jwtService.generateTokenLogin(user.getEmail());
 				Cookie jwt = utils.createCookie("Authorization", result, true, (long) 3600);
-
 				response.addCookie(jwt);
 				httpStatus = HttpStatus.OK;
-				status = "Login successfully";
+				user = userService.findByEmail(user.getEmail());
+				status = user.getRole().getCode();
 			}else {
 				status = "Email or Password is wrong!";
 			}
 		} catch (Exception ex) {
-			System.out.println(ex.getMessage());
+			ex.getStackTrace();
 		}
 		return new ResponseEntity<Object>(status, httpStatus);
 	}

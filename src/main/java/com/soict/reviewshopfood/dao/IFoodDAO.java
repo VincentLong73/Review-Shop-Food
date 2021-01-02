@@ -21,10 +21,10 @@ public interface IFoodDAO extends JpaRepository<Food, Integer> {
 	Food getFoodById(int id);
 	List<Food> getListFoodByNameContainingAndIsDelete(String nameFood,boolean isDelete);
 	@Query("select food from Food food where food.isDelete = false order by food.view")
-	List<Food> getFoodByOrderByViewAsc();
-	@Query("select food from Food food where food.isDelete = false order by food.createdAt")
+	List<Food> getFoodByOrderByViewDesc();
+	@Query("select food from Food food where food.isDelete = false order by food.createdAt DESC")
 	List<Food> getFoodByCreatedAtAsc();
-	@Query("select food from Food food where food.isDelete = false order by food.rate")
-	List<Food> getFoodByOrderByRateAsc();
+	@Query("select food from Food food where food.isDelete = false order by food.rate DESC")
+	List<Food> getFoodByOrderByRateDesc();
 	
 }
