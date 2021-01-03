@@ -1,11 +1,6 @@
 package com.soict.reviewshopfood.controller;
 
 
-import com.soict.reviewshopfood.entity.User;
-import com.soict.reviewshopfood.model.UserEditFormModel;
-import com.soict.reviewshopfood.model.UserModel;
-import com.soict.reviewshopfood.service.impl.ImageAvatarService;
-import com.soict.reviewshopfood.service.impl.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
@@ -134,11 +129,12 @@ public class UserController {
 		return new ResponseEntity<String>(urlImage, httpStatus);
 	}
 
-	@GetMapping("/avatar/{photo}")
-	public ResponseEntity<Object> getImageAvatar1(@PathVariable("photo") String photo) throws SQLException {
+	@GetMapping("/avatar")
+	public ResponseEntity<Object> getImageAvatar1() throws SQLException {
 		HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		try {
-			Path filename = Paths.get("uploads/avatar/", photo);
+			Path filename = Paths.get("uploads/avatar/", userService.findByEmail(auth.getName()).getImageUrl());
 			byte[] buffer = Files.readAllBytes(filename);
 			ByteArrayResource byteArrayResource = new ByteArrayResource(buffer);
 			return ResponseEntity.ok().contentLength(buffer.length).contentType(MediaType.valueOf(MediaType.IMAGE_JPEG_VALUE)).body(byteArrayResource);

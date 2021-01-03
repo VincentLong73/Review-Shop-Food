@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import com.soict.reviewshopfood.dao.ICommentDAO;
 import com.soict.reviewshopfood.dao.ILikeDAO;
 import com.soict.reviewshopfood.dao.IUserDAO;
-import com.soict.reviewshopfood.entity.Like;
+import com.soict.reviewshopfood.entity.Liked;
 import com.soict.reviewshopfood.model.LikeModel;
 import com.soict.reviewshopfood.service.ILikeService;
 @Service
@@ -26,7 +26,7 @@ public class LikeService implements ILikeService{
 	@Override
 	public void addLike(LikeModel likeModel) throws SQLException {
 		if(likeModel.getUserId()  != 0 && likeModel.getCommentId() != 0) {
-			Like like = new Like();
+			Liked like = new Liked();
 			like.setUser(userDao.getOne(likeModel.getUserId()));
 			like.setComment(commentDao.getOne(likeModel.getCommentId()));
 			likeDao.save(like);
@@ -36,10 +36,10 @@ public class LikeService implements ILikeService{
 
 	@Override
 	public List<LikeModel> getLike(int commentId) {
-		List<Like> listLike = likeDao.getListLikeByCommentId(commentId);
+		List<Liked> listLike = likeDao.getLikedByCommentId(commentId);
 		List<LikeModel> listLikeModel = new ArrayList<LikeModel>();
 		if(listLike != null) {
-			for(Like like : listLike) {
+			for(Liked like : listLike) {
 				LikeModel likeModel = new LikeModel();
 				likeModel.setId(like.getId());
 				likeModel.setUserId(like.getUser().getId());
