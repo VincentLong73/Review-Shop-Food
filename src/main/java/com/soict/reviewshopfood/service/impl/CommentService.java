@@ -9,8 +9,10 @@ import org.springframework.stereotype.Service;
 
 import com.soict.reviewshopfood.dao.ICommentDAO;
 import com.soict.reviewshopfood.dao.IFoodDAO;
+import com.soict.reviewshopfood.dao.ILikeDAO;
 import com.soict.reviewshopfood.dao.IUserDAO;
 import com.soict.reviewshopfood.entity.Comment;
+import com.soict.reviewshopfood.entity.Liked;
 import com.soict.reviewshopfood.model.CommentModel;
 import com.soict.reviewshopfood.model.LikeModel;
 import com.soict.reviewshopfood.service.ICommentService;
@@ -25,8 +27,11 @@ public class CommentService implements ICommentService{
 	@Autowired
 	private ICommentDAO commentDao;
 	
+//	@Autowired
+//	private LikeService likeService;
+	
 	@Autowired
-	private LikeService likeService;
+	private ILikeDAO likeDao;
 
 	@Override
 	public void addComment(CommentModel commentModel) {
@@ -52,9 +57,21 @@ public class CommentService implements ICommentService{
 			
 			for(Comment comment : comments) {
 				CommentModel commentModel = new CommentModel();
-				List<LikeModel> listLike = likeService.getLike(comment.getId());
-				commentModel.setCountLike(listLike.size());
-				commentModel.setListLike(listLike);
+				//List<LikeModel> listLike = likeService.getLike(comment.getId());
+				List<Liked> listLike = likeDao.getLikedByCommentId(comment.getId());
+				List<LikeModel> listLikeModel = new ArrayList<LikeModel>();
+				if(listLike != null) {
+					for(Liked like : listLike) {
+						LikeModel likeModel = new LikeModel();
+						likeModel.setId(like.getId());
+						likeModel.setUserId(like.getUser().getId());
+						likeModel.setCommentId(like.getComment().getId());
+						listLikeModel.add(likeModel);
+					}
+				}
+				
+				commentModel.setCountLike(listLikeModel.size());
+				commentModel.setListLike(listLikeModel);
 				commentModel.setId(comment.getId());
 				commentModel.setRate(comment.getRate());
 				commentModel.setContent(comment.getContent());
