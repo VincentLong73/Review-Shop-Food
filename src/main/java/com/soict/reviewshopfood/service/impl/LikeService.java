@@ -43,6 +43,7 @@ public class LikeService implements ILikeService{
 				LikeModel likeModel = new LikeModel();
 				likeModel.setId(like.getId());
 				likeModel.setUserId(like.getUser().getId());
+				likeModel.setUserName(like.getUser().getUserName());
 				likeModel.setCommentId(like.getComment().getId());
 				listLikeModel.add(likeModel);
 			}

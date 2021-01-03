@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 public class LikeModel {
 	private int id;
 	private int userId;
+	private String userName;
 	private int commentId;
 
 }

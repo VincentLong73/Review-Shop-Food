@@ -95,6 +95,7 @@ public class CommentService implements ICommentService{
 				LikeModel likeModel = new LikeModel();
 				likeModel.setId(like.getId());
 				likeModel.setUserId(like.getUser().getId());
+				likeModel.setUserName(like.getUser().getUserName());
 				listLikeModel.add(likeModel);
 			}
 		}
@@ -108,6 +109,7 @@ public class CommentService implements ICommentService{
 		commentModel.setCreatedAt(comment.getCreatedAt());
 		commentModel.setUserId(comment.getUser().getId());
 		commentModel.setFoodId(comment.getFood().getId());
+		commentModel.setUserName(comment.getUser().getUserName());
 		return commentModel;
 	}
 
