@@ -56,7 +56,7 @@ public class Food implements Serializable{
 	private int view;
 	
 	@Column(name="rate")
-	private int rate;
+	private float rate;
 	
 	@Column(name="created_at")
 	private Date createdAt;

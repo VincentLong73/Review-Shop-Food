@@ -134,12 +134,11 @@ public class UserController {
 		return new ResponseEntity<String>(urlImage, httpStatus);
 	}
 
-	@GetMapping("/avatar")
-	public ResponseEntity<Object> getImageAvatar1() throws SQLException {
+	@GetMapping("/avatar/{photo}")
+	public ResponseEntity<Object> getImageAvatar1(@PathVariable("photo") String photo) throws SQLException {
 		HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		try {
-			Path filename = Paths.get("uploads/avatar/", userService.findByEmail(auth.getName()).getImageUrl());
+			Path filename = Paths.get("uploads/avatar/", photo);
 			byte[] buffer = Files.readAllBytes(filename);
 			ByteArrayResource byteArrayResource = new ByteArrayResource(buffer);
 			return ResponseEntity.ok().contentLength(buffer.length).contentType(MediaType.valueOf(MediaType.IMAGE_JPEG_VALUE)).body(byteArrayResource);

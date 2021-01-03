@@ -50,7 +50,7 @@ public class FoodController {
 	private ShopService shopService;
 
 	// lay mon an theo id va con ban
-	@RequestMapping(value = "/getFood/{id}")
+	@GetMapping(value = "/getFood/{id}")
 	public ResponseEntity<Object> getFood(@PathVariable("id") int id) {
 		HttpStatus httpStatus = null;
 		FoodModel foodModel = new FoodModel();
@@ -58,7 +58,7 @@ public class FoodController {
 			foodModel = foodService.getFoodByIdAndActive(id);
 			if (foodModel != null) {
 				httpStatus = HttpStatus.OK;
-				foodModel.setView(foodModel.getView() + 1);
+				foodModel.setView(foodModel.getView()+1);
 				foodService.editFood(foodModel);
 			} else {
 				httpStatus = HttpStatus.NO_CONTENT;

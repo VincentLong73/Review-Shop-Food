@@ -99,8 +99,7 @@ public class FoodService implements IFoodService {
 			if (!food.getContent().equals(foodModel.getContent()) && foodModel.getContent() != null) {
 				food.setContent(foodModel.getContent());
 			}
-			if (!food.getShortDescription().equals(foodModel.getShortDescription())
-					&& foodModel.getShortDescription() != null) {
+			if (!(foodModel.getShortDescription() != null && food.getShortDescription().equals(foodModel.getShortDescription()))) {
 				food.setShortDescription(foodModel.getShortDescription());
 			}
 			if (food.getPrice() != (foodModel.getPrice()) && foodModel.getPrice() != 0) {
@@ -207,7 +206,7 @@ public class FoodService implements IFoodService {
 			foodModel.setUpdateAt(food.getUpdateAt());
 
 			String thumbnail = ServletUriComponentsBuilder.fromCurrentContextPath()
-					.path("/images/" + food.getThumbnail()).toUriString();
+					.path("/api/food/foodImage/" + food.getThumbnail()).toUriString();
 			foodModel.setThumbnail(thumbnail);
 
 			foodModel.setListImageFoodUrl(getListImageFoodUrl(food.getId()));
@@ -263,6 +262,7 @@ public class FoodService implements IFoodService {
 			foodModel.setCreatedBy(food.getCreatedBy());
 			foodModel.setUpdateAt(food.getUpdateAt());
 			foodModel.setView(food.getView());
+			foodModel.setShortDescription(food.getShortDescription());
 			foodModel.setShopId(food.getShop().getId());
 			String thumbnail = ServletUriComponentsBuilder.fromCurrentContextPath()
 					.path("/api/food/foodImage/" + food.getThumbnail()).toUriString();
@@ -274,7 +274,7 @@ public class FoodService implements IFoodService {
 				sumRate = sumRate + comment.getRate();
 			}
 			// Tinh rating tu cac diem rate cua food
-			foodModel.setRating((double) Math.round(((double) sumRate / listComment.size()) * 10) / 10);
+			foodModel.setRating(food.getRate());
 			return foodModel;
 		}
 		return null;
