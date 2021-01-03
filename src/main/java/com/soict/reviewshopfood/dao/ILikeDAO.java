@@ -7,10 +7,11 @@ import javax.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.soict.reviewshopfood.entity.Like;
+import com.soict.reviewshopfood.entity.Liked;
 
 @Repository
 @Transactional
-public interface ILikeDAO extends JpaRepository<Like, Integer>{
-	List<Like> getListLikeByCommentId(int commentId);
+public interface ILikeDAO extends JpaRepository<Liked, Integer>{
+	
+	List<Liked> getLikedByCommentId(int commentId);
 }

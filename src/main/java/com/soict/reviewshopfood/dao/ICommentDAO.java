@@ -15,6 +15,4 @@ public interface ICommentDAO extends JpaRepository<Comment, Integer>{
 
 	List<Comment> getListCommentByFoodId(int foodId);
 	
-//	@Query("select * from Comment c where c.comment.id = ?1")
-//	Comment getCommentByCommmentParentId(int id);
 }
