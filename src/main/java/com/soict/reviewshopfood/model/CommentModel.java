@@ -20,5 +20,6 @@ public class CommentModel {
 	private int commentParentId;
 	private int countLike;
 	private int rate;
+	private CommentModel commentParent;
 	private List<LikeModel> listLike;
 }

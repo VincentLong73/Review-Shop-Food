@@ -57,36 +57,58 @@ public class CommentService implements ICommentService{
 			
 			for(Comment comment : comments) {
 				CommentModel commentModel = new CommentModel();
-				//List<LikeModel> listLike = likeService.getLike(comment.getId());
+				
 				List<Liked> listLike = likeDao.getLikedByCommentId(comment.getId());
 				List<LikeModel> listLikeModel = new ArrayList<LikeModel>();
-				if(listLike != null) {
-					for(Liked like : listLike) {
-						LikeModel likeModel = new LikeModel();
-						likeModel.setId(like.getId());
-						likeModel.setUserId(like.getUser().getId());
-						likeModel.setCommentId(like.getComment().getId());
-						listLikeModel.add(likeModel);
-					}
-				}
+				listLikeModel = mapListLike(listLike);
+
+				commentModel = mapComment(comment);
 				
 				commentModel.setCountLike(listLikeModel.size());
 				commentModel.setListLike(listLikeModel);
-				commentModel.setId(comment.getId());
 				commentModel.setRate(comment.getRate());
-				commentModel.setContent(comment.getContent());
-				commentModel.setCreatedAt(comment.getCreatedAt());
-				commentModel.setUserId(comment.getUser().getId());
-				commentModel.setFoodId(comment.getFood().getId());
 				
-				if(comment.getComment() != null) {	
-					commentModel.setCommentParentId(comment.getComment().getId());
+				if(comment.getComment() != null && commentDao.existsById(comment.getComment().getId())) {	
+					Comment commentParent = commentDao.getOne(comment.getComment().getId());
+					CommentModel commentParentModel = new CommentModel();
+					
+					commentParentModel = mapComment(commentParent);
+					List<LikeModel> listLikeModel1 = new ArrayList<LikeModel>();
+					listLikeModel1 = mapListLike(likeDao.getLikedByCommentId(commentParentModel.getId()));
+					commentParentModel.setCountLike(listLikeModel1.size());
+					commentParentModel.setListLike(listLikeModel1);
+					
+					commentModel.setCommentParent(commentParentModel);
+					
 				}
 				commentModels.add(commentModel);
 			}
 		}
 		
 		return commentModels;
+	}
+
+	private List<LikeModel> mapListLike(List<Liked> likedByCommentId) {
+		List<LikeModel> listLikeModel = new ArrayList<LikeModel>();
+		if(likedByCommentId != null) {
+			for(Liked like : likedByCommentId) {
+				LikeModel likeModel = new LikeModel();
+				likeModel.setId(like.getId());
+				likeModel.setUserId(like.getUser().getId());
+				listLikeModel.add(likeModel);
+			}
+		}
+		return listLikeModel;
+	}
+
+	private CommentModel mapComment(Comment comment) {
+		CommentModel commentModel = new CommentModel();
+		commentModel.setId(comment.getId());
+		commentModel.setContent(comment.getContent());
+		commentModel.setCreatedAt(comment.getCreatedAt());
+		commentModel.setUserId(comment.getUser().getId());
+		commentModel.setFoodId(comment.getFood().getId());
+		return commentModel;
 	}
 
 //	@Override
