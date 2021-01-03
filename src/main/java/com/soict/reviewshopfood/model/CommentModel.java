@@ -15,6 +15,7 @@ public class CommentModel {
 	private int id;
 	private String content;
 	private int userId;
+	private String userName;
 	private int foodId;
 	private Date createdAt;
 	private int commentParentId;
