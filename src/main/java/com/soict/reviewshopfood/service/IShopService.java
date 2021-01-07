@@ -3,6 +3,7 @@ package com.soict.reviewshopfood.service;
 import java.sql.SQLException;
 import java.util.List;
 
+import com.soict.reviewshopfood.model.FormShopModel;
 import com.soict.reviewshopfood.model.ShopModel;
 
 public interface IShopService {
@@ -13,6 +14,6 @@ public interface IShopService {
 	void addShop(ShopModel shopModel) throws SQLException;					//Them shop theo
 	void editShop(ShopModel shopModel) throws SQLException;					//Sua thong tin shop theo
 	void deleteShop(int id)  throws SQLException;							//Xoa shop theo id
-	
-	
+	boolean registerShop(FormShopModel formShopModel);
+	boolean activeShop(int shopId);
 }

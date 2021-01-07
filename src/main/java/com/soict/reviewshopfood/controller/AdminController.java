@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -77,13 +76,30 @@ public class AdminController {
 		return new ResponseEntity<Object>(foodModels,httpStatus);
 	}
 	//dang ki tai khoan chu shop
-	@PostMapping(value="/register",produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_FORM_URLENCODED_VALUE})
-	public ResponseEntity<Object> addUSer(UserModel userModel){
-		HttpStatus httpStatus = null;
+//	@PostMapping(value="/register",produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_FORM_URLENCODED_VALUE})
+//	public ResponseEntity<Object> addUSer(UserModel userModel){
+//		HttpStatus httpStatus = null;
+//		try {
+//			userModel.setCodeRole("ROLE_SHOP");
+//			userService.addUser(userModel);
+//			httpStatus = HttpStatus.OK;
+//		}catch(Exception e) {
+//			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+//			System.out.println(e);
+//		}
+//		return new ResponseEntity<Object>(httpStatus);
+//	}
+	
+	@PutMapping(value="/activeShop",produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_FORM_URLENCODED_VALUE})
+	public ResponseEntity<Object> activeShop(int shopId){
+		HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 		try {
-			userModel.setCodeRole("ROLE_SHOP");
-			userService.addUser(userModel);
-			httpStatus = HttpStatus.OK;
+			if(shopService.activeShop(shopId)) {
+				httpStatus = HttpStatus.OK;
+			}else {
+				httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+			}
+			
 		}catch(Exception e) {
 			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 			System.out.println(e);

@@ -20,15 +20,19 @@ import org.springframework.web.bind.annotation.RestController;
 import com.soict.reviewshopfood.entity.User;
 import com.soict.reviewshopfood.helper.Utils;
 import com.soict.reviewshopfood.jwt.JwtService;
+import com.soict.reviewshopfood.model.FormShopModel;
 import com.soict.reviewshopfood.model.UserModel;
+import com.soict.reviewshopfood.service.impl.ShopService;
 import com.soict.reviewshopfood.service.impl.UserService;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
-@RequestMapping(value="/api/auth")
+@RequestMapping(value = "/api/auth")
 public class AuthController {
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private ShopService shopService;
 	@Autowired
 	private Utils utils;
 	@Autowired
@@ -47,7 +51,7 @@ public class AuthController {
 				httpStatus = HttpStatus.OK;
 				user = userService.findByEmail(user.getEmail());
 				status = user.getRole().getCode();
-			}else {
+			} else {
 				status = "Email or Password is wrong!";
 			}
 		} catch (Exception ex) {
@@ -71,7 +75,7 @@ public class AuthController {
 
 	// dang ki tai khoan nguoi dung
 	@PostMapping(value = "/register", produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-	public ResponseEntity<Object> addUSer(UserModel userModel) {
+	public ResponseEntity<Object> addUser(UserModel userModel) {
 		HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 		try {
 			userModel.setCodeRole("ROLE_CUSTOMER");
@@ -83,4 +87,21 @@ public class AuthController {
 		}
 		return new ResponseEntity<Object>(httpStatus);
 	}
+
+	// dang ki tai khoan cho shop
+	@PostMapping(value = "/registerShop", produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+	public ResponseEntity<Object> registerShop(FormShopModel formShopModel) {
+		HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+		try {
+			if(shopService.registerShop(formShopModel)) {
+				httpStatus = HttpStatus.OK;
+			}else {
+				httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+			}
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		return new ResponseEntity<Object>(httpStatus);
+	}
+
 }
