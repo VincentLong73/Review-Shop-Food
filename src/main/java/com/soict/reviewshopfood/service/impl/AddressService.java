@@ -39,7 +39,7 @@ public class AddressService implements IAddressService {
 	@Override
 	public void addAddress(AddressModel addressModel) {
 		
-		addressDao.saveAndFlush(modelMapper.map(addressModel, Address.class));
+		addressDao.save(modelMapper.map(addressModel, Address.class));
 		
 	}
 

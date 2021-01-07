@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import com.soict.reviewshopfood.entity.User;
+import com.soict.reviewshopfood.model.FormShopModel;
 import com.soict.reviewshopfood.model.UserModel;
 
 public interface IUserService {
@@ -21,4 +22,5 @@ public interface IUserService {
 	void applyNewPassword(User user) throws SQLException;//Cap nhat lai password
 	UserModel getUserByEmail(String email);
 	void updateUser(User user);
+	boolean registerShop(FormShopModel formShopModel);
 }

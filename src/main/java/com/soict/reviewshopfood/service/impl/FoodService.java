@@ -207,7 +207,7 @@ public class FoodService implements IFoodService {
 			foodModel.setUpdateAt(food.getUpdateAt());
 
 			String thumbnail = ServletUriComponentsBuilder.fromCurrentContextPath()
-					.path("/images/" + food.getThumbnail()).toUriString();
+					.path("/api/food/foodImage/" + food.getThumbnail()).toUriString();
 			foodModel.setThumbnail(thumbnail);
 
 			foodModel.setListImageFoodUrl(getListImageFoodUrl(food.getId()));

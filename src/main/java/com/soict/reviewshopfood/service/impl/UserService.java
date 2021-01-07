@@ -19,10 +19,16 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.soict.reviewshopfood.dao.IAddressDAO;
 import com.soict.reviewshopfood.dao.IRoleDAO;
+import com.soict.reviewshopfood.dao.IShopDAO;
 import com.soict.reviewshopfood.dao.IUserDAO;
+import com.soict.reviewshopfood.entity.Address;
+import com.soict.reviewshopfood.entity.Shop;
 import com.soict.reviewshopfood.entity.User;
 import com.soict.reviewshopfood.exception.FileStorageException;
+import com.soict.reviewshopfood.model.AddressModel;
+import com.soict.reviewshopfood.model.FormShopModel;
 import com.soict.reviewshopfood.model.UserModel;
 import com.soict.reviewshopfood.properties.FileStorageProperties;
 import com.soict.reviewshopfood.service.IUserService;
@@ -36,6 +42,11 @@ public class UserService implements IUserService, UserDetailsService {
 	private IUserDAO userDao;
 	@Autowired
 	private IRoleDAO roleDao;
+	@Autowired
+	private IAddressDAO addressDao;
+	@Autowired
+	private IShopDAO shopDao;
+	
 	private final Path fileStorageLocation;
 	
 	@Autowired
@@ -227,6 +238,50 @@ public class UserService implements IUserService, UserDetailsService {
 			return true;
 		}	
 		return false;
+	}
+
+	@Override
+	public boolean registerShop(FormShopModel formShopModel) {
+		User user = new User();
+		Shop shop = new Shop();
+		
+		if(userDao.findByEmail(formShopModel.getEmail()) != null) {
+			return false;
+		}
+		
+		//luu tai khoan chu shop
+		
+		user.setFullName(formShopModel.getFullName());
+		//user.setUserName(formShopModel.getCreatedBy());
+		user.setEmail(formShopModel.getEmail());
+		user.setActive(false);
+		//user.setCreatedBy(formShopModel.getCreatedBy());
+		user.setRole(roleDao.findByCode("ROLE_SHOP"));
+		user.setCreatedAt(new Date());
+		userDao.save(user);
+		
+		//luu thong tin shop
+		
+		shop.setUser(userDao.findByEmail(user.getEmail()));
+		shop.setDescription(formShopModel.getDescription());
+		shop.setDelete(true);
+		
+		//Luu vi tri
+		AddressModel addressModel =new AddressModel();
+		
+		addressModel.setCountry(formShopModel.getCountry());
+		addressModel.setProvince(formShopModel.getProvince());
+		addressModel.setDistrict(formShopModel.getDistrict());
+		addressModel.setVillage(formShopModel.getVillage());
+		addressModel.setStreet(formShopModel.getStreet());
+		addressModel.setDelete(true);
+		
+		addressDao.save(modelMapper.map(addressModel, Address.class));
+		
+		shop.setAddress(addressDao.findByDistrictAndVillageAndStreet(addressModel.getDistrict(), addressModel.getVillage(),addressModel.getStreet()));
+		shopDao.save(shop);
+		
+		return true;
 	}
 
 }
