@@ -13,6 +13,7 @@ public class AddressModel {
 	private String district;
 	private String village;
 	private String street;
+	private String province;
 	private boolean isDelete;
 
 }

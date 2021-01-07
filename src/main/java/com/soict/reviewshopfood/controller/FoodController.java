@@ -1,30 +1,5 @@
 package com.soict.reviewshopfood.controller;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.soict.reviewshopfood.entity.Food;
 import com.soict.reviewshopfood.entity.Shop;
 import com.soict.reviewshopfood.entity.User;
@@ -34,6 +9,22 @@ import com.soict.reviewshopfood.service.impl.FoodService;
 import com.soict.reviewshopfood.service.impl.ImageFoodService;
 import com.soict.reviewshopfood.service.impl.ShopService;
 import com.soict.reviewshopfood.service.impl.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/food")
@@ -59,7 +50,7 @@ public class FoodController {
 			if (foodModel != null) {
 				httpStatus = HttpStatus.OK;
 				foodModel.setView(foodModel.getView()+1);
-				foodService.editFood(foodModel);
+				foodService.addCountView(foodModel);
 			} else {
 				httpStatus = HttpStatus.NO_CONTENT;
 			}
@@ -250,5 +241,18 @@ public class FoodController {
 			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 		}
 		return new ResponseEntity<Object>(httpStatus);
+	}
+
+	@GetMapping(value = "/getFoodByShop/{idShop}")
+	public Object getFoodByShop(@PathVariable("idShop") int idShop) {
+		HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+		List<FoodModel> foods = null;
+		try {
+			foods = foodService.getFoodByShopId(idShop);
+			httpStatus = HttpStatus.OK;
+		}catch (Exception e) {
+			e.getStackTrace();
+		}
+		return new ResponseEntity<Object>(foods, httpStatus);
 	}
 }

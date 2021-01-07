@@ -204,7 +204,7 @@ public class FoodService implements IFoodService {
 			foodModel.setView(food.getView());
 			foodModel.setShopId(food.getShop().getId());
 			foodModel.setUpdateAt(food.getUpdateAt());
-
+			foodModel.setImageShop(food.getShop().getImageUrl());
 			String thumbnail = ServletUriComponentsBuilder.fromCurrentContextPath()
 					.path("/api/food/foodImage/" + food.getThumbnail()).toUriString();
 			foodModel.setThumbnail(thumbnail);
@@ -346,5 +346,9 @@ public class FoodService implements IFoodService {
 		}
 		return food;
 	}
-
+	public void addCountView(FoodModel foodModel){
+		Food food = foodDao.getFoodById(foodModel.getId());
+		food.setView(food.getView()+1);
+		foodDao.save(food);
+	}
 }

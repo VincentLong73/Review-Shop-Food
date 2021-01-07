@@ -75,7 +75,7 @@ public class AuthController {
 		HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 		try {
 			userModel.setCodeRole("ROLE_CUSTOMER");
-			if (userService.addUser(userModel)) {
+			if (null != userService.addUser(userModel)) {
 				httpStatus = HttpStatus.OK;
 			}
 		} catch (Exception e) {

@@ -1,13 +1,12 @@
 package com.soict.reviewshopfood.service.impl;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
+import com.soict.reviewshopfood.dao.IRoleDAO;
+import com.soict.reviewshopfood.dao.IUserDAO;
+import com.soict.reviewshopfood.entity.User;
+import com.soict.reviewshopfood.exception.FileStorageException;
+import com.soict.reviewshopfood.model.UserModel;
+import com.soict.reviewshopfood.properties.FileStorageProperties;
+import com.soict.reviewshopfood.service.IUserService;
 import org.apache.commons.lang.RandomStringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,13 +18,13 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.soict.reviewshopfood.dao.IRoleDAO;
-import com.soict.reviewshopfood.dao.IUserDAO;
-import com.soict.reviewshopfood.entity.User;
-import com.soict.reviewshopfood.exception.FileStorageException;
-import com.soict.reviewshopfood.model.UserModel;
-import com.soict.reviewshopfood.properties.FileStorageProperties;
-import com.soict.reviewshopfood.service.IUserService;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Service
 public class UserService implements IUserService, UserDetailsService {
@@ -55,17 +54,15 @@ public class UserService implements IUserService, UserDetailsService {
 	//	@Autowired
 //	private JavaMailSender emailSender;
 	@Override
-	public boolean addUser(UserModel userModel) {
+	public User addUser(UserModel userModel) {
 		User user = modelMapper.map(userModel, User.class);
 		if (userDao.findByEmail(user.getEmail()) == null) {
 			user.setCreatedAt(new Date());
 			user.setActive(true);
 			user.setRole(roleDao.findByCode(user.getRole().getCode()));
-			userDao.save(user);
-			return true;
+			return userDao.save(user);
 		}
-		return false;
-
+		return null;
 	}
 
 	@Override
@@ -219,14 +216,20 @@ public class UserService implements IUserService, UserDetailsService {
 			if(user.getUserName().equals(userModel.getUserName()) && userModel.getUserName() != null) {
 				user.setUserName(userModel.getUserName());
 			}
-			if(user.getFullName().equals(userModel.getFullName()) && userModel.getFullName() != null) {
+			if (user.getFullName().equals(userModel.getFullName()) && userModel.getFullName() != null) {
 				user.setFullName(userModel.getFullName());
 			}
 			user.setUpdateAt(new Date());
 			userDao.saveAndFlush(user);
 			return true;
-		}	
+		}
 		return false;
 	}
 
+	public User createAccountShop(UserModel userModel) {
+		User user = modelMapper.map(userModel, User.class);
+		user.setCreatedAt(new Date());
+		user.setRole(roleDao.findByCode(user.getRole().getCode()));
+		return userDao.save(user);
+	}
 }

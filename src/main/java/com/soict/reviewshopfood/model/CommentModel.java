@@ -23,4 +23,5 @@ public class CommentModel {
 	private int rate;
 	private CommentModel commentParent;
 	private List<LikeModel> listLike;
+	private String avatar;
 }

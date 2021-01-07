@@ -15,6 +15,7 @@ import com.soict.reviewshopfood.entity.Food;
 public interface IFoodDAO extends JpaRepository<Food, Integer> {
 
 	Food getFoodByIdAndIsDelete(int id,boolean isDelete);
+	@Query(nativeQuery = true, value="select * from food where shop_id = :shopId and is_delete = 0 order by rate desc limit 20")
 	List<Food> getFoodByShopId(int shopId);
 	List<Food> getFoodByShopIdAndIsDelete(int shopId,boolean isDelete);
 	List<Food> getListFoodByNameContaining(String nameFood);

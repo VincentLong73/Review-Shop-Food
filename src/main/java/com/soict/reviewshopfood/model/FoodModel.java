@@ -29,4 +29,5 @@ public class FoodModel {
 	private int shopId;
 	private MultipartFile thumbnailFile;
 	private boolean isDelete;
+	private String imageShop;
 }

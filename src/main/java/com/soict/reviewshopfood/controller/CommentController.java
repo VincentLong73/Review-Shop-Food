@@ -3,6 +3,8 @@ package com.soict.reviewshopfood.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.soict.reviewshopfood.entity.Comment;
+import com.soict.reviewshopfood.service.impl.LikeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.soict.reviewshopfood.model.CommentModel;
+import com.soict.reviewshopfood.model.LikeModel;
 import com.soict.reviewshopfood.service.impl.CommentService;
 
 @RestController
@@ -24,7 +27,8 @@ public class CommentController {
 	
 	@Autowired
 	private CommentService commentService;
-	
+	@Autowired
+	private LikeService likeService;
 	@GetMapping(value="/getListComment/{foodId}")
 	public ResponseEntity<Object> getListCommentByIdFood(@PathVariable("foodId") int foodId){
 		HttpStatus httpStatus = null;
@@ -39,11 +43,23 @@ public class CommentController {
 		return new ResponseEntity<Object>(commentModels,httpStatus);
 	}
 	
-	@PostMapping(value="/addComment",produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+	@PostMapping(value="/addComment",produces = {  MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_FORM_URLENCODED_VALUE})
 	public ResponseEntity<Object> addComment(CommentModel commentModel){
+		HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+		try {
+			commentModel = commentService.addComment(commentModel);
+			httpStatus = HttpStatus.CREATED;
+		}catch(Exception e) {
+			e.getStackTrace();
+		}
+		return new ResponseEntity<Object>(commentModel, httpStatus);
+	}
+
+	@PostMapping(value="/addLike",produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+	public ResponseEntity<Object> addLike(LikeModel likeModel){
 		HttpStatus httpStatus = null;
 		try {
-			commentService.addComment(commentModel);
+			likeService.addLike(likeModel.getCommentId(), likeModel.getUserId());
 			httpStatus = HttpStatus.OK;
 		}catch(Exception e) {
 			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -51,7 +67,18 @@ public class CommentController {
 		}
 		return new ResponseEntity<Object>(httpStatus);
 	}
-	
+	@GetMapping(value = "/getChildComment/{commentId}")
+	public ResponseEntity<Object> getChildComment(@PathVariable("commentId") int commentId){
+		HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+		List<CommentModel> commentModels = null;
+		try{
+			commentModels = commentService.getChildComment(commentId);
+			httpStatus = HttpStatus.OK;
+		}catch (Exception e){
+			e.getStackTrace();
+		}
+		return new ResponseEntity<Object>(commentModels, httpStatus);
+	}
 //	@DeleteMapping(value="deleteComment/{id}")
 //	public ResponseEntity<Object> deleteComment(@PathVariable("id") int id){
 //		
