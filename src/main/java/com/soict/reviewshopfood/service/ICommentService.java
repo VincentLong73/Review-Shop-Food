@@ -7,7 +7,7 @@ import com.soict.reviewshopfood.model.CommentModel;
 
 public interface ICommentService {
 
-	void addComment(CommentModel commentModel) throws SQLException; 			//Them comment vao bai viet cua mon an
+	CommentModel addComment(CommentModel commentModel) throws SQLException; 			//Them comment vao bai viet cua mon an
 	//void deleteComment(int id);
 	List<CommentModel> getListCommentbyIdFood(int foodId) throws SQLException; //Lay cac comment theo mon an;
 }

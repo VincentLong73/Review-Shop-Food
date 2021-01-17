@@ -79,7 +79,7 @@ public class AuthController {
 		HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 		try {
 			userModel.setCodeRole("ROLE_CUSTOMER");
-			if (userService.addUser(userModel)) {
+			if ( null != userService.addUser(userModel)) {
 				httpStatus = HttpStatus.OK;
 			}
 		} catch (Exception e) {
@@ -94,12 +94,10 @@ public class AuthController {
 		HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 		try {
 			if(shopService.registerShop(formShopModel)) {
-				httpStatus = HttpStatus.OK;
-			}else {
-				httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+				httpStatus = HttpStatus.CREATED;
 			}
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			e.getStackTrace();
 		}
 		return new ResponseEntity<Object>(httpStatus);
 	}

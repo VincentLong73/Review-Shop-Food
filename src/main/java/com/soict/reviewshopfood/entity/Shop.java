@@ -39,8 +39,8 @@ public class Shop implements Serializable {/**
 	@Column(name="description")
 	private String description;
 	
-	@Column(name="image_url")
-	private String imageUrl;
+	@Column(name="phone")
+	private String phone;
 	
 	@Column(name="created_at")
 	private Date createdAt;

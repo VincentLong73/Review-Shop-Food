@@ -10,10 +10,10 @@ import lombok.NoArgsConstructor;
 public class AddressModel {
 	private int id;
 	private String country;
-	private String province;
 	private String district;
 	private String village;
 	private String street;
+	private String province;
 	private boolean isDelete;
 
 }

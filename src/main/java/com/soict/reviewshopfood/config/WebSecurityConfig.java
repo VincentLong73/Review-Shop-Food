@@ -87,16 +87,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 				.antMatchers(HttpMethod.DELETE,"/api/food/**").permitAll()
 				
 				.antMatchers(HttpMethod.GET,"/api/comment/**").permitAll()
-				.antMatchers(HttpMethod.POST,"/api/comment/**").access("hasRole('ROLE_CUSTOMER')")
-				.antMatchers(HttpMethod.PUT,"/api/comment/**").access("hasRole('ROLE_CUSTOMER')")
+				.antMatchers(HttpMethod.POST,"/api/comment/**").permitAll()
+				.antMatchers(HttpMethod.PUT,"/api/comment/**").permitAll()
 				
 				.antMatchers(HttpMethod.GET,"/api/shop/**").permitAll()
-				.antMatchers(HttpMethod.POST,"/api/shop/**").access("hasRole('ROLE_SHOP')")
+				.antMatchers(HttpMethod.POST,"/api/shop/**").permitAll()
 				.antMatchers(HttpMethod.PUT,"/api/shop/**").access("hasRole('ROLE_SHOP')")
 				.antMatchers(HttpMethod.DELETE,"/api/shop/**").access("hasRole('ROLE_ADMIN')")
 				
 				
-				.antMatchers("/api/admin/**").access("hasRole('ROLE_ADMIN')")
+				.antMatchers("/api/admin/**").permitAll()
 //				.antMatchers(HttpMethod.GET,"/api/admin/**").access("hasRole('ROLE_ADMIN')")
 //				.antMatchers(HttpMethod.POST,"/api/admin/**").access("hasRole('ROLE_ADMIN')")
 //				.antMatchers(HttpMethod.PUT,"/api/admin/**").access("hasRole('ROLE_ADMIN')")

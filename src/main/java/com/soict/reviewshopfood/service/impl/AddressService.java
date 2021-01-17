@@ -37,10 +37,8 @@ public class AddressService implements IAddressService {
 //	}
 
 	@Override
-	public void addAddress(AddressModel addressModel) {
-		
-		addressDao.save(modelMapper.map(addressModel, Address.class));
-		
+	public Address addAddress(AddressModel addressModel) {
+		 return addressDao.save(modelMapper.map(addressModel, Address.class));
 	}
 
 	@Override

@@ -17,7 +17,7 @@ public class FoodModel {
 	private String name;
 	private List<String> listImageFoodUrl;
 	private List<Integer> markRates;
-	private double rating;
+	private  float rating;
 	private String content;
 	private String shortDescription;
 	private String thumbnail;
@@ -29,4 +29,7 @@ public class FoodModel {
 	private int shopId;
 	private MultipartFile thumbnailFile;
 	private boolean isDelete;
+	private String imageShop;
+	private String emailShop;
+	private String nameShop;
 }

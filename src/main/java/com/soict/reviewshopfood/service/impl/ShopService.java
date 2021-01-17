@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.soict.reviewshopfood.entity.Food;
+import com.soict.reviewshopfood.model.*;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +18,6 @@ import com.soict.reviewshopfood.dao.IUserDAO;
 import com.soict.reviewshopfood.entity.Address;
 import com.soict.reviewshopfood.entity.Shop;
 import com.soict.reviewshopfood.entity.User;
-import com.soict.reviewshopfood.model.AddressModel;
-import com.soict.reviewshopfood.model.FormShopModel;
-import com.soict.reviewshopfood.model.ShopModel;
 import com.soict.reviewshopfood.service.IShopService;
 
 @Service
@@ -100,12 +99,9 @@ public class ShopService implements IShopService {
 	public ShopModel findShopById(int id) {
 		
 		Shop shop = shopDao.getOne(id);
-		ShopModel shopModel = new ShopModel();
-		if (shop != null) {
-			shopModel = modelMapper.map(shop, ShopModel.class);
-			shopModel.setUserId(shop.getUser().getId());
-			shopModel.setAddressModel(modelMapper.map(shop.getAddress(), AddressModel.class));
-		}
+		ShopModel shopModel = modelMapper.map(shop, ShopModel.class);
+		shopModel.setUserId(shop.getUser().getId());
+		shopModel.setAddressModel(modelMapper.map(shop.getAddress(), AddressModel.class));
 		return shopModel;
 	}
 
@@ -145,14 +141,15 @@ public class ShopService implements IShopService {
 		//user.setCreatedBy(formShopModel.getCreatedBy());
 		user.setRole(roleDao.findByCode("ROLE_SHOP"));
 		user.setCreatedAt(new Date());
-		userDao.save(user);
+		user = userDao.save(user);
 		
 		//luu thong tin shop
 		shop.setNameShop(formShopModel.getNameShop());
-		shop.setUser(userDao.findByEmail(user.getEmail()));
+		shop.setUser(user);
 		shop.setDescription(formShopModel.getDescription());
 		shop.setCreatedAt(new Date());
-		shop.setDelete(true);
+		shop.setDelete(false);
+		shop.setPhone(formShopModel.getPhone());
 		
 		//Luu vi tri
 		AddressModel addressModel =new AddressModel();
@@ -164,9 +161,9 @@ public class ShopService implements IShopService {
 		addressModel.setStreet(formShopModel.getStreet());
 		addressModel.setDelete(true);
 		
-		addressDao.save(modelMapper.map(addressModel, Address.class));
+		Address address = addressDao.save(modelMapper.map(addressModel, Address.class));
 		
-		shop.setAddress(addressDao.findByDistrictAndVillageAndStreet(addressModel.getDistrict(), addressModel.getVillage(),addressModel.getStreet()));
+		shop.setAddress(address);
 		shopDao.save(shop);
 		
 		return true;
@@ -196,5 +193,19 @@ public class ShopService implements IShopService {
 		
 		return true;
 	}
-
+	public Shop editShop(FormEditShop formEditShop, String email){
+		User user = userDao.findByEmail(email);
+		Shop shop = this.findShopByUserId(user.getShop().getId());
+		Address address = addressDao.getOne(shop.getAddress().getId());
+		address.setDistrict(formEditShop.getDistrict());
+		address.setProvince(formEditShop.getProvince());
+		address.setStreet(formEditShop.getStreet());
+		address.setVillage(formEditShop.getVillage());
+		addressDao.save(address);
+		shop.setPhone(formEditShop.getPhone());
+		shop.setDescription(formEditShop.getDescription());
+		shop.setAddress(address);
+		shopDao.save(shop);
+		return shop;
+	}
 }

@@ -24,14 +24,11 @@ public class LikeService implements ILikeService{
 	private ILikeDAO likeDao;
 
 	@Override
-	public void addLike(LikeModel likeModel) throws SQLException {
-		if(likeModel.getUserId()  != 0 && likeModel.getCommentId() != 0) {
+	public void addLike(int commentId, int userId) throws SQLException {
 			Liked like = new Liked();
-			like.setUser(userDao.getOne(likeModel.getUserId()));
-			like.setComment(commentDao.getOne(likeModel.getCommentId()));
+			like.setUser(userDao.getOne(userId));
+			like.setComment(commentDao.getOne(commentId));
 			likeDao.save(like);
-		}
-		
 	}
 
 	@Override

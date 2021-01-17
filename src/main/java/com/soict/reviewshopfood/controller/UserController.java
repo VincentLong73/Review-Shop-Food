@@ -1,6 +1,24 @@
 package com.soict.reviewshopfood.controller;
 
 
+import com.soict.reviewshopfood.entity.User;
+import com.soict.reviewshopfood.model.FormEditPassword;
+import com.soict.reviewshopfood.model.ShopModel;
+import com.soict.reviewshopfood.model.UserEditFormModel;
+import com.soict.reviewshopfood.model.UserModel;
+import com.soict.reviewshopfood.service.impl.ImageAvatarService;
+import com.soict.reviewshopfood.service.impl.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -9,29 +27,6 @@ import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Objects;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import com.soict.reviewshopfood.entity.User;
-import com.soict.reviewshopfood.model.UserEditFormModel;
-import com.soict.reviewshopfood.model.UserModel;
-import com.soict.reviewshopfood.service.impl.ImageAvatarService;
-import com.soict.reviewshopfood.service.impl.UserService;
 
 
 @CrossOrigin(origins = "http://localhost:3000/", allowCredentials = "true", maxAge = 3600)
@@ -171,5 +166,24 @@ public class UserController {
 		}
 
 		return new ResponseEntity<Object>(userModel, httpStatus);
+	}
+	@PostMapping(value = "/editPassword", produces = {MediaType.APPLICATION_FORM_URLENCODED_VALUE, MediaType.APPLICATION_JSON_VALUE})
+	public ResponseEntity<Object> editPassword(FormEditPassword formEditPassword) {
+		HttpStatus httpStatus = HttpStatus.FORBIDDEN;
+		ShopModel shopModel = null;
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (formEditPassword.getNewPassword().equals(formEditPassword.getRePassword())) {
+			try {
+				User user = userService.findByEmail(auth.getName());
+				if (user.getPassword().equals(formEditPassword.getPassword())) {
+					user.setPassword(formEditPassword.getNewPassword());
+					userService.updateUser(user);
+					httpStatus = HttpStatus.OK;
+				}
+			} catch (Exception e) {
+				e.getStackTrace();
+			}
+		}
+		return new ResponseEntity<Object>(httpStatus);
 	}
 }

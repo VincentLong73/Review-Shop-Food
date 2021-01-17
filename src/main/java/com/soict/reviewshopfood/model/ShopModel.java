@@ -13,11 +13,12 @@ public class ShopModel {
 	private int id;
 	private String nameShop;
 	private String description;
-	private String image;
+//	private String image;
 	private int userId;
 	private Date createdAt;
 	private String createdBy;
 	private Date updateAt;
 	private AddressModel addressModel;
 	private boolean isDelete;
+	private String phone;
 }
