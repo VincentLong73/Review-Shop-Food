@@ -1,12 +1,13 @@
 package com.soict.reviewshopfood.service.impl;
 
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.soict.reviewshopfood.dao.IAddressDAO;
 import com.soict.reviewshopfood.entity.Address;
 import com.soict.reviewshopfood.model.AddressModel;
 import com.soict.reviewshopfood.service.IAddressService;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 @Service
 public class AddressService implements IAddressService {
@@ -37,7 +38,7 @@ public class AddressService implements IAddressService {
 
 	@Override
 	public Address addAddress(AddressModel addressModel) {
-		return addressDao.saveAndFlush(modelMapper.map(addressModel, Address.class));
+		 return addressDao.save(modelMapper.map(addressModel, Address.class));
 	}
 
 	@Override

@@ -18,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -153,29 +154,46 @@ public class FoodController {
 	}
 
 	//Them mon an
-	@RequestMapping(value = "/addFood", method = RequestMethod.POST, produces = { MediaType.APPLICATION_FORM_URLENCODED_VALUE
-																				, MediaType.MULTIPART_FORM_DATA_VALUE})
-	public ResponseEntity<Object> addFood(FoodModel foodModel) {
-		HttpStatus httpStatus = null;
-
+	@RequestMapping(value = "/addFood", method = RequestMethod.POST, produces = {MediaType.APPLICATION_FORM_URLENCODED_VALUE
+			, MediaType.MULTIPART_FORM_DATA_VALUE})
+	public ResponseEntity<Object> addFood(FoodModel foodModel1) {
+		HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+		FoodModel foodModel = new FoodModel();
 		try {
-			if(foodService.addFood(foodModel)) {
-				httpStatus = HttpStatus.OK;
-			}else {
-				httpStatus = HttpStatus.NO_CONTENT;
+			Food food = foodService.addFood(foodModel1);
+			if (null != food) {
+				httpStatus = HttpStatus.CREATED;
+				foodModel.setId(food.getId());
+				foodModel.setName(food.getName());
+				foodModel.setContent(food.getContent());
+				foodModel.setPrice(food.getPrice());
+				foodModel.setCreatedAt(food.getCreatedAt());
+				foodModel.setDelete(food.isDelete());
+				foodModel.setCreatedBy(food.getCreatedBy());
+				foodModel.setView(food.getView());
+				foodModel.setShopId(food.getShop().getId());
+				foodModel.setUpdateAt(food.getUpdateAt());
+				foodModel.setImageShop(ServletUriComponentsBuilder.fromCurrentContextPath()
+						.path("/api/user/avatar/" + food.getShop().getUser().getImageUrl()).toUriString());
+				String thumbnail = ServletUriComponentsBuilder.fromCurrentContextPath()
+						.path("/api/food/foodImage/" + food.getThumbnail()).toUriString();
+				foodModel.setThumbnail(thumbnail);
+				foodModel.setListImageFoodUrl(foodService.getListImageFoodUrl(food.getId()));
+				// Tinh rating tu cac diem rate cua food
+				foodModel.setRating(food.getRate());
 			}
 		} catch (Exception e) {
-			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-			System.out.println(e);
+
+			e.getStackTrace();
 		}
 
-		return new ResponseEntity<Object>(httpStatus);
+		return new ResponseEntity<Object>(foodModel, httpStatus);
 	}
 
 	//Them anh cho mon an theo foodId
 	@PostMapping("/uploadImageFood/{foodId}")
 	public ResponseEntity<Object> uploadMultiFiles(@RequestParam("files") MultipartFile files[],
-			@PathVariable("foodId") int foodId) {
+												   @PathVariable("foodId") int foodId) {
 		HttpStatus httpStatus = null;
 		try {
 			imageFoodService.storeFileImageFood(files, foodId);
@@ -222,12 +240,13 @@ public class FoodController {
 						foodModel.setView(foodModel.getView());
 					}
 				} catch (Exception e) {
-					System.out.println(e.getMessage());
+					e.getStackTrace();
 				}
 			}
 		}
 		return new ResponseEntity<Object>(foodModel, httpStatus);
 	}
+
 	@GetMapping("/foodImage/{photo}")
 	public ResponseEntity<Object> getImageAvatar1(@PathVariable("photo") String photo) throws SQLException {
 		HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -238,7 +257,6 @@ public class FoodController {
 			return ResponseEntity.ok().contentLength(buffer.length).contentType(MediaType.valueOf(MediaType.IMAGE_JPEG_VALUE)).body(byteArrayResource);
 		} catch (Exception e) {
 			System.out.println(e);
-			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 		}
 		return new ResponseEntity<Object>(httpStatus);
 	}
@@ -250,9 +268,95 @@ public class FoodController {
 		try {
 			foods = foodService.getFoodByShopId(idShop);
 			httpStatus = HttpStatus.OK;
-		}catch (Exception e) {
+		} catch (Exception e) {
 			e.getStackTrace();
 		}
 		return new ResponseEntity<Object>(foods, httpStatus);
+	}
+
+	@GetMapping(value = "/getFoodShop")
+	public Object getFoodShop() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		HttpStatus httpStatus = HttpStatus.FORBIDDEN;
+		List<FoodModel> foods = null;
+		try {
+			User user = userService.findByEmail(auth.getName());
+			foods = foodService.getFoodByShopId(user.getShop().getId());
+			httpStatus = HttpStatus.OK;
+		} catch (Exception e) {
+			e.getStackTrace();
+		}
+		return new ResponseEntity<Object>(foods, httpStatus);
+	}
+
+	@DeleteMapping(value = "/deleteFood/{id}")
+	public ResponseEntity<Object> deleteFood(@PathVariable("id") String id) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		HttpStatus httpStatus = HttpStatus.FORBIDDEN;
+		if (auth.isAuthenticated()) {
+			try {
+				User user = userService.findByEmail(auth.getName());
+				if (foodService.deleteFood(user.getShop(), Integer.parseInt(id))) httpStatus = HttpStatus.ACCEPTED;
+			} catch (Exception e) {
+				e.getStackTrace();
+			}
+		}
+		return new ResponseEntity<Object>(httpStatus);
+	}
+
+	@PostMapping(value = "/editFood", produces = {MediaType.APPLICATION_FORM_URLENCODED_VALUE, MediaType.APPLICATION_JSON_VALUE})
+	public ResponseEntity<Object> editFood(@RequestParam(name = "thumbnail", required = false) MultipartFile thumbnail, @RequestParam(name = "foodImages", required = false) MultipartFile[] foodImages, FormNewFood formNewFood) {
+		HttpStatus httpStatus = HttpStatus.FORBIDDEN;
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Food food = null;
+		FoodModel foodModel = null;
+		if (auth.isAuthenticated()) {
+			try {
+				User user = userService.findByEmail(auth.getName());
+				if (user.getRole().getCode().equals("ROLE_SHOP")) {
+					Shop shop = shopService.findShopByUserId(user.getId());
+					food = foodService.editFood(thumbnail, foodImages, formNewFood, shop);
+					httpStatus = HttpStatus.CREATED;
+					foodModel = foodService.getFoodByIdAndActive(food.getId());
+					if (foodModel != null) {
+						foodModel.setView(foodModel.getView());
+						httpStatus = HttpStatus.OK;
+					}
+				}
+			} catch (Exception e) {
+				e.getStackTrace();
+			}
+		}
+		return new ResponseEntity<Object>(foodModel, httpStatus);
+	}
+
+	@GetMapping(value = "/search/{key}", produces = {MediaType.APPLICATION_JSON_VALUE})
+	public ResponseEntity<Object> SearchFoodByAdmin(@PathVariable("key") String key) {
+		HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+		List<FoodModel> foodModels = null;
+		try {
+			foodModels = foodService.getFoodByNameLike(key);
+			httpStatus = HttpStatus.OK;
+
+
+		} catch (Exception e) {
+			e.getStackTrace();
+		}
+		return new ResponseEntity<Object>(foodModels, httpStatus);
+	}
+
+	@GetMapping(value = "/searchFood/{key}", produces = {MediaType.APPLICATION_JSON_VALUE})
+	public ResponseEntity<Object> SearchFoodByCustomer(@PathVariable("key") String key) {
+		HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+		List<FoodModel> foodModels = null;
+		try {
+			foodModels = foodService.getFoodByNameLikeAnActive(key);
+			httpStatus = HttpStatus.OK;
+
+
+		} catch (Exception e) {
+			e.getStackTrace();
+		}
+		return new ResponseEntity<Object>(foodModels, httpStatus);
 	}
 }

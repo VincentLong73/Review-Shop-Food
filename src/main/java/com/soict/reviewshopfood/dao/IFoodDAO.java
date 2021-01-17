@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import com.soict.reviewshopfood.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -27,5 +28,10 @@ public interface IFoodDAO extends JpaRepository<Food, Integer> {
 	List<Food> getFoodByCreatedAtDesc();
 	@Query(nativeQuery = true, value="select * from food where is_delete = false order by rate desc limit 20")
 	List<Food> getFoodByOrderByRateDesc();
-	
+	@Query(nativeQuery = true, value="select COUNT(id) from food")
+	long getTotalFood();
+	@Query(nativeQuery = true, value="select * from food WHERE name LIKE %:key%")
+	List<Food> getFoodLike(String key);
+	@Query(nativeQuery = true, value="select * from food WHERE name LIKE %:key% AND is_delete = 0")
+	List<Food> getFoodLikeAndActive(String key);
 }

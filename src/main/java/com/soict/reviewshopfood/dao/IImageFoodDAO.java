@@ -13,4 +13,5 @@ import com.soict.reviewshopfood.entity.ImageFood;
 @Transactional
 public interface IImageFoodDAO extends JpaRepository<ImageFood, Integer>{
 	List<ImageFood> findByFoodId(int foodId);
+	ImageFood findByImageUrl(String name);
 }

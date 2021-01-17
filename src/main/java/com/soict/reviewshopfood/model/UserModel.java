@@ -21,4 +21,6 @@ public class UserModel {
 	private String createdBy;
 	private String codeRole;
 	private String imageUrl;
+	private ShopModel shopModel;
+	private boolean isDelete;
 }

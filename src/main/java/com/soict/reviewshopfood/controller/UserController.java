@@ -2,6 +2,8 @@ package com.soict.reviewshopfood.controller;
 
 
 import com.soict.reviewshopfood.entity.User;
+import com.soict.reviewshopfood.model.FormEditPassword;
+import com.soict.reviewshopfood.model.ShopModel;
 import com.soict.reviewshopfood.model.UserEditFormModel;
 import com.soict.reviewshopfood.model.UserModel;
 import com.soict.reviewshopfood.service.impl.ImageAvatarService;
@@ -164,5 +166,24 @@ public class UserController {
 		}
 
 		return new ResponseEntity<Object>(userModel, httpStatus);
+	}
+	@PostMapping(value = "/editPassword", produces = {MediaType.APPLICATION_FORM_URLENCODED_VALUE, MediaType.APPLICATION_JSON_VALUE})
+	public ResponseEntity<Object> editPassword(FormEditPassword formEditPassword) {
+		HttpStatus httpStatus = HttpStatus.FORBIDDEN;
+		ShopModel shopModel = null;
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (formEditPassword.getNewPassword().equals(formEditPassword.getRePassword())) {
+			try {
+				User user = userService.findByEmail(auth.getName());
+				if (user.getPassword().equals(formEditPassword.getPassword())) {
+					user.setPassword(formEditPassword.getNewPassword());
+					userService.updateUser(user);
+					httpStatus = HttpStatus.OK;
+				}
+			} catch (Exception e) {
+				e.getStackTrace();
+			}
+		}
+		return new ResponseEntity<Object>(httpStatus);
 	}
 }

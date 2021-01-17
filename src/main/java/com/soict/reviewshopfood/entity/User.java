@@ -5,16 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -65,16 +56,18 @@ public class User implements Serializable{/**
 
 	@Column(name="created_by")
 	private String createdBy;
-	
+	@Column(name="is_delete")
+	private boolean isDelete;
+
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 	@EqualsAndHashCode.Exclude
     @ToString.Exclude
 	private List<Comment> comments = new ArrayList<>();
 	
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
 	@EqualsAndHashCode.Exclude
     @ToString.Exclude
-	private List<Shop> shops = new ArrayList<>();
+	private Shop shop = new Shop();
 	
 	@ManyToOne
 	@JoinColumn(name="role_id")

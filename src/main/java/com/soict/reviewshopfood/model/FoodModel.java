@@ -30,4 +30,6 @@ public class FoodModel {
 	private MultipartFile thumbnailFile;
 	private boolean isDelete;
 	private String imageShop;
+	private String emailShop;
+	private String nameShop;
 }

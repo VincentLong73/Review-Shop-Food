@@ -6,6 +6,8 @@ import com.soict.reviewshopfood.dao.ILikeDAO;
 import com.soict.reviewshopfood.dao.IUserDAO;
 import com.soict.reviewshopfood.entity.Comment;
 import com.soict.reviewshopfood.entity.Liked;
+import com.soict.reviewshopfood.entity.User;
+import com.soict.reviewshopfood.model.ChildCommentForm;
 import com.soict.reviewshopfood.model.CommentModel;
 import com.soict.reviewshopfood.model.LikeModel;
 import com.soict.reviewshopfood.service.ICommentService;
@@ -116,6 +118,8 @@ public class CommentService implements ICommentService{
 		commentModel.setUserId(comment.getUser().getId());
 		commentModel.setFoodId(comment.getFood().getId());
 		commentModel.setUserName(comment.getUser().getUserName());
+		commentModel.setCreatedAt(comment.getCreatedAt());
+		commentModel.setCommentParentId(comment.getComment()!=null? comment.getComment().getId() : -1 );
 		commentModel.setAvatar(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/user/avatar/" + comment.getUser().getImageUrl()).toUriString());
 		return commentModel;
 	}
@@ -139,6 +143,15 @@ public class CommentService implements ICommentService{
 //		}
 //		
 //	}
-
-
+	public CommentModel addChildComment(ChildCommentForm childCommentForm, User user){
+		Comment comment = commentDao.getOne(childCommentForm.getCommentParentId());
+		Comment newComment = new Comment();
+		newComment.setComment(comment);
+		newComment.setUser(user);
+		newComment.setContent(childCommentForm.getReply());
+		newComment.setCreatedAt(new Date());
+		newComment.setFood(comment.getFood());
+		newComment = commentDao.save(newComment);
+		return this.mapComment(newComment);
+	}
 }

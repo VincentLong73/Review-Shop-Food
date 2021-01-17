@@ -3,6 +3,7 @@ package com.soict.reviewshopfood.service;
 import java.sql.SQLException;
 import java.util.List;
 
+import com.soict.reviewshopfood.entity.Food;
 import org.springframework.stereotype.Service;
 
 import com.soict.reviewshopfood.model.FoodModel;
@@ -13,7 +14,7 @@ public interface IFoodService {
 	List<FoodModel> getListFoodByRate() throws SQLException; 					// Lay cac mon an theo so luong rating
 	List<FoodModel> getFoodByCreatedAtDesc() throws SQLException; 					// Lay cac mon an theo so ngay dang
 	List<FoodModel> getListFood() throws SQLException; 							//Lay danh sach cac mon an;
-	boolean addFood(FoodModel foodModel) throws SQLException; 						//Them mon an vao shop;
+	Food addFood(FoodModel foodModel) throws SQLException; 						//Them mon an vao shop;
 	void editFood(FoodModel foodModel) throws SQLException; 					//Sua thong tin cua mon an;
 	List<FoodModel> getFoodByShopId(int shopId) throws SQLException; 			//Lay danh sach mon an theo shopId;
 	List<FoodModel> getListFoodByNameFood(String nameFood) throws SQLException; //Lay danh sach mon an theo ten

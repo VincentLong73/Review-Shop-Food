@@ -1,9 +1,16 @@
 package com.soict.reviewshopfood.service.impl;
 
+import com.soict.reviewshopfood.dao.IAddressDAO;
 import com.soict.reviewshopfood.dao.IRoleDAO;
+import com.soict.reviewshopfood.dao.IShopDAO;
 import com.soict.reviewshopfood.dao.IUserDAO;
+import com.soict.reviewshopfood.entity.Address;
+import com.soict.reviewshopfood.entity.Role;
+import com.soict.reviewshopfood.entity.Shop;
 import com.soict.reviewshopfood.entity.User;
 import com.soict.reviewshopfood.exception.FileStorageException;
+import com.soict.reviewshopfood.model.AddressModel;
+import com.soict.reviewshopfood.model.FormShopModel;
 import com.soict.reviewshopfood.model.UserModel;
 import com.soict.reviewshopfood.properties.FileStorageProperties;
 import com.soict.reviewshopfood.service.IUserService;
@@ -35,8 +42,13 @@ public class UserService implements IUserService, UserDetailsService {
 	private IUserDAO userDao;
 	@Autowired
 	private IRoleDAO roleDao;
+	@Autowired
+	private IAddressDAO addressDao;
+	@Autowired
+	private IShopDAO shopDao;
+
 	private final Path fileStorageLocation;
-	
+
 	@Autowired
 	public UserService(FileStorageProperties fileStorageProperties) {
 		this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir()).toAbsolutePath().normalize();
@@ -61,6 +73,7 @@ public class UserService implements IUserService, UserDetailsService {
 			user.setActive(true);
 			user.setRole(roleDao.findByCode(user.getRole().getCode()));
 			return userDao.save(user);
+
 		}
 		return null;
 	}
@@ -115,13 +128,15 @@ public class UserService implements IUserService, UserDetailsService {
 //	}
 
 	@Override
-	public List<UserModel> getListUserByRoleId(String roleCode) {
-		List<User> users = userDao.findByRoleId(roleDao.findByCode(roleCode).getId());
+	public List<UserModel> getListUser() {
+		List<User> users = userDao.getUser();
 		List<UserModel> userModels = new ArrayList<UserModel>();
 		if (users != null && users.size() > 0) {
 			for (User user : users) {
 				UserModel userModel = new UserModel();
 				userModel = modelMapper.map(user, UserModel.class);
+				userModel.setImageUrl(ServletUriComponentsBuilder.fromCurrentContextPath()
+						.path("/api/user/avatar/" + user.getImageUrl()).toUriString());
 				userModels.add(userModel);
 			}
 		}
@@ -136,7 +151,6 @@ public class UserService implements IUserService, UserDetailsService {
 			userModel = modelMapper.map(user, UserModel.class);
 			userModel.setImageUrl(user.getImageUrl());
 			userModel.setPassword(null);
-			
 		}
 		return userModel;
 	}
@@ -213,7 +227,7 @@ public class UserService implements IUserService, UserDetailsService {
 		
 		if(userDao.findByEmail(email) != null) {
 			User user = userDao.findByEmail(email);
-			if(user.getUserName().equals(userModel.getUserName()) && userModel.getUserName() != null) {
+			if (user.getUserName().equals(userModel.getUserName()) && userModel.getUserName() != null) {
 				user.setUserName(userModel.getUserName());
 			}
 			if (user.getFullName().equals(userModel.getFullName()) && userModel.getFullName() != null) {
@@ -226,10 +240,78 @@ public class UserService implements IUserService, UserDetailsService {
 		return false;
 	}
 
-	public User createAccountShop(UserModel userModel) {
-		User user = modelMapper.map(userModel, User.class);
+	@Override
+	public boolean registerShop(FormShopModel formShopModel) {
+		User user = new User();
+		Shop shop = new Shop();
+
+		if (userDao.findByEmail(formShopModel.getEmail()) != null) {
+			return false;
+		}
+
+		//luu tai khoan chu shop
+
+		user.setFullName(formShopModel.getFullName());
+		//user.setUserName(formShopModel.getCreatedBy());
+		user.setEmail(formShopModel.getEmail());
+		user.setActive(false);
+		//user.setCreatedBy(formShopModel.getCreatedBy());
+		user.setRole(roleDao.findByCode("ROLE_SHOP"));
 		user.setCreatedAt(new Date());
-		user.setRole(roleDao.findByCode(user.getRole().getCode()));
-		return userDao.save(user);
+		userDao.save(user);
+
+		//luu thong tin shop
+
+		shop.setUser(userDao.findByEmail(user.getEmail()));
+		shop.setDescription(formShopModel.getDescription());
+		shop.setDelete(true);
+
+		//Luu vi tri
+		AddressModel addressModel = new AddressModel();
+
+		addressModel.setCountry(formShopModel.getCountry());
+		addressModel.setProvince(formShopModel.getProvince());
+		addressModel.setDistrict(formShopModel.getDistrict());
+		addressModel.setVillage(formShopModel.getVillage());
+		addressModel.setStreet(formShopModel.getStreet());
+		addressModel.setDelete(true);
+
+		addressDao.save(modelMapper.map(addressModel, Address.class));
+
+		shop.setAddress(addressDao.findByDistrictAndVillageAndStreet(addressModel.getDistrict(), addressModel.getVillage(), addressModel.getStreet()));
+		shopDao.save(shop);
+
+		return true;
+	}
+
+	public List<User> getRequestCreateShop(Date date) {
+		return userDao.getUserByDate(date);
+	}
+
+	public List<User> getShopActive() {
+		return userDao.getShopActive();
+	}
+
+	public void deleteUser(int id) throws Exception {
+		User user = userDao.getOne(id);
+		user.setDelete(true);
+		userDao.saveAndFlush(user);
+	}
+
+	public void unDeleteUser(int id) throws Exception {
+		User user = userDao.getOne(id);
+		user.setDelete(false);
+		userDao.saveAndFlush(user);
+	}
+	public void toggleActive(int id) throws Exception {
+		User user = userDao.getOne(id);
+		user.setActive(!user.isActive());
+		userDao.saveAndFlush(user);
+	}
+	public long getTotalCustomer() throws Exception {
+		return userDao.getTotalCustomer();
+	}
+	public long getTotalShop() throws Exception {
+		return userDao.getTotalShop();
 	}
 }
