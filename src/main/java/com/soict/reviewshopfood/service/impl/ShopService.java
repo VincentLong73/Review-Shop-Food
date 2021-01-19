@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.soict.reviewshopfood.entity.Food;
-import com.soict.reviewshopfood.model.*;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import com.soict.reviewshopfood.dao.IAddressDAO;
@@ -18,6 +18,10 @@ import com.soict.reviewshopfood.dao.IUserDAO;
 import com.soict.reviewshopfood.entity.Address;
 import com.soict.reviewshopfood.entity.Shop;
 import com.soict.reviewshopfood.entity.User;
+import com.soict.reviewshopfood.model.AddressModel;
+import com.soict.reviewshopfood.model.FormEditShop;
+import com.soict.reviewshopfood.model.FormShopModel;
+import com.soict.reviewshopfood.model.ShopModel;
 import com.soict.reviewshopfood.service.IShopService;
 
 @Service
@@ -35,6 +39,8 @@ public class ShopService implements IShopService {
 	private AddressService addressService;
 	@Autowired
 	private ModelMapper modelMapper;
+	@Autowired
+	private JavaMailSender emailSender;
 
 	@Override
 	public List<ShopModel> findShopByNameShop(String nameShop) {
@@ -190,6 +196,13 @@ public class ShopService implements IShopService {
 		Address address = addressDao.getOne(shop.getAddress().getId());
 		address.setDelete(false);
 		addressDao.saveAndFlush(address);
+		
+		SimpleMailMessage message = new SimpleMailMessage();
+		message.setTo(user.getEmail());
+		message.setSubject("Change Password");
+		message.setText("Hello, We are Admin!\n Your account is actived ");
+		// Send Message!
+		this.emailSender.send(message);
 		
 		return true;
 	}
