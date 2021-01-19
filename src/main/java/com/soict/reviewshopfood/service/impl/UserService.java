@@ -1,22 +1,18 @@
 package com.soict.reviewshopfood.service.impl;
 
-import com.soict.reviewshopfood.dao.IAddressDAO;
-import com.soict.reviewshopfood.dao.IRoleDAO;
-import com.soict.reviewshopfood.dao.IShopDAO;
-import com.soict.reviewshopfood.dao.IUserDAO;
-import com.soict.reviewshopfood.entity.Address;
-import com.soict.reviewshopfood.entity.Role;
-import com.soict.reviewshopfood.entity.Shop;
-import com.soict.reviewshopfood.entity.User;
-import com.soict.reviewshopfood.exception.FileStorageException;
-import com.soict.reviewshopfood.model.AddressModel;
-import com.soict.reviewshopfood.model.FormShopModel;
-import com.soict.reviewshopfood.model.UserModel;
-import com.soict.reviewshopfood.properties.FileStorageProperties;
-import com.soict.reviewshopfood.service.IUserService;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import org.apache.commons.lang.RandomStringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,13 +21,19 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import com.soict.reviewshopfood.dao.IAddressDAO;
+import com.soict.reviewshopfood.dao.IRoleDAO;
+import com.soict.reviewshopfood.dao.IShopDAO;
+import com.soict.reviewshopfood.dao.IUserDAO;
+import com.soict.reviewshopfood.entity.Address;
+import com.soict.reviewshopfood.entity.Shop;
+import com.soict.reviewshopfood.entity.User;
+import com.soict.reviewshopfood.exception.FileStorageException;
+import com.soict.reviewshopfood.model.AddressModel;
+import com.soict.reviewshopfood.model.FormShopModel;
+import com.soict.reviewshopfood.model.UserModel;
+import com.soict.reviewshopfood.properties.FileStorageProperties;
+import com.soict.reviewshopfood.service.IUserService;
 
 @Service
 public class UserService implements IUserService, UserDetailsService {
@@ -46,6 +48,9 @@ public class UserService implements IUserService, UserDetailsService {
 	private IAddressDAO addressDao;
 	@Autowired
 	private IShopDAO shopDao;
+	
+	@Autowired
+	private JavaMailSender emailSender;
 
 	private final Path fileStorageLocation;
 
@@ -60,11 +65,7 @@ public class UserService implements IUserService, UserDetailsService {
 					ex);
 		}
 	}
-//	@Autowired
-//	private JavaMailSender emailSender;
 
-	//	@Autowired
-//	private JavaMailSender emailSender;
 	@Override
 	public User addUser(UserModel userModel) {
 		User user = modelMapper.map(userModel, User.class);
@@ -107,6 +108,13 @@ public class UserService implements IUserService, UserDetailsService {
 		if (userUpdate != null) {
 			userUpdate.setPassword(passRandom);
 			userDao.save(userUpdate);
+			
+			SimpleMailMessage message = new SimpleMailMessage();
+			message.setTo(userUpdate.getEmail());
+			message.setSubject("Change Password");
+			message.setText("Hello, We are Admin!\n Your new password is : " + passRandom);
+			// Send Message!
+			this.emailSender.send(message);
 		}
 	}
 //	@Override
@@ -160,6 +168,19 @@ public class UserService implements IUserService, UserDetailsService {
 			User user = userDao.getOne(id);
 			user.setActive(active);
 			userDao.saveAndFlush(user);
+			
+			SimpleMailMessage message = new SimpleMailMessage();
+			message.setTo(user.getEmail());
+			if(active) {
+				message.setSubject("Active account");
+				message.setText("Hello, We are Admin!\n Your account is actived");
+			}else {
+				message.setSubject("Block account");
+				message.setText("Hello, We are Admin!\n Your account is blocked");
+			}
+			
+			// Send Message!
+			this.emailSender.send(message);
 		}
 	}
 
